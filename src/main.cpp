@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 		std::cout << "Usage: ./ircserv <port> <password>"<< std::endl;
 		return (EXIT_FAILURE);
 	}
-	uint16_t port = atoi(argv[1]);
+	int port = atoi(argv[1]);
 
 	std::cout << "lol" << std::endl;
 	return (0);
