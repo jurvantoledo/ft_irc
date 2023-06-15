@@ -2,6 +2,7 @@
 #define SERVER_H
 #include <iostream>
 #include <unistd.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>

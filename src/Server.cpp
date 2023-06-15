@@ -11,6 +11,8 @@ Server::~Server()
 
 void	Server::createSocket() 
 {
+	char buffer[1024] = { 0 };
+
 	/*
 		int domain -> specifies communication domain We use AF_INET for processes connected by IPV6
 		int type -> communication type - SOCK_STREAM: TCP(reliable, connection oriented)
@@ -59,4 +61,29 @@ void	Server::createSocket()
 		std::cerr << "Failed to bind IP/port" << std::endl;
 		exit(EXIT_FAILURE);
 	}
+
+	if (listen(sockfd, 5) < 0)
+	{
+		close(sockfd);
+		std::cerr << "Failed to listen to socket" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+    std::cout << "Server listening on port" << " " << _port << std::endl;
+
+	int new_sockfd = accept(sockfd, nullptr, nullptr);
+	if (new_sockfd < 0)
+	{	
+		close(sockfd);
+		std::cerr << "Failed to accept connection." << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	read(new_sockfd, buffer, 1024);
+    printf("%s\n", buffer);
+	std::string hello = "wtf bruh";
+    send(new_sockfd, NULL, 1000, 0);
+    printf("Hello message sent\n");
+
+	close(new_sockfd);
+	shutdown(sockfd, SHUT_RDWR);
 }
