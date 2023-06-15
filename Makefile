@@ -9,7 +9,8 @@ RM		= rm -rf
 MKDIR	= mkdir -p
 
 SRC		= $(addprefix src/, $(addsuffix .cpp, \
-			main))
+			main \
+			Server))
 
 all: $(NAME)
 

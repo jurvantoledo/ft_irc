@@ -1,4 +1,4 @@
-#include <iostream>
+#include "../include/Server.hpp"
 
 int main(int argc, char *argv[]) 
 {
@@ -9,6 +9,6 @@ int main(int argc, char *argv[])
 	}
 	int port = atoi(argv[1]);
 
-	std::cout << "lol" << std::endl;
+	Server server(port, argv[2]);
 	return (0);
 }
