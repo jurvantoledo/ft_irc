@@ -1,2 +1,2 @@
 # Commands to use when testing irc
-- `nc -c <port> <password>`
+- `nc -c <host> <port>`
