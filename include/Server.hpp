@@ -8,6 +8,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#define MAX_BUFFER 4096
+
 class Server
 {
 	private:
@@ -19,6 +21,10 @@ class Server
 		~Server();
 
 		void	createSocket();
+		void	setSocketOptions(int sockfd);
+		void	bindSocket(int sockfd);
+		void	listenSocket(int sockfd);
+		int		acceptConnection(int sockfd);
 };
 
 #endif
