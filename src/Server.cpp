@@ -32,7 +32,7 @@ void	Server::setSocketOptions(int sockfd)
 
 void	Server::bindSocket(int sockfd)
 {
-		// get the sockaddr_in struct
+	// get the sockaddr_in struct
 	sockaddr_in serverAddr;
 	// set everything to 0
 	memset(&serverAddr, 0, sizeof(serverAddr));
