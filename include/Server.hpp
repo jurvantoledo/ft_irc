@@ -20,10 +20,11 @@ class Server
 		Server(int &port, std::string password);
 		~Server();
 
-		void	createSocket();
+		void	runSocket();
+		int		createSocket();
 		void	setSocketOptions(int sockfd);
 		void	bindSocket(int sockfd);
-		void	listenSocket(int sockfd);
+		void	listenForConnect(int sockfd);
 		int		acceptConnection(int sockfd);
 };
 

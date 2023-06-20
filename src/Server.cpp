@@ -51,35 +51,31 @@ void	Server::bindSocket(int sockfd)
 	}
 }
 
-void	Server::listenSocket(int sockfd)
-{
-	if (listen(sockfd, 5) < 0)
-	{
-		close(sockfd);
-		std::cerr << "Failed to listen to socket" << std::endl;
-		exit(EXIT_FAILURE);
-	}
-}
+// void	Server::listenForConnect(int sockfd)
+// {
+// 	if (listen(sockfd, 5) < 0)
+// 	{
+// 		close(sockfd);
+// 		std::cerr << "Failed to listen to socket" << std::endl;
+// 		exit(EXIT_FAILURE);
+// 	}
+// }
 
 int		Server::acceptConnection(int sockfd)
 {
-	int	new_sockfd;
+	int	sockfd;
 
-	new_sockfd = accept(sockfd, nullptr, nullptr);
-	if (new_sockfd < 0)
+	sockfd = accept(sockfd, nullptr, nullptr);
+	if (sockfd < 0)
 	{	
 		close(sockfd);
-		std::cerr << "Failed to accept connection." << std::endl;
-		exit(EXIT_FAILURE);
+		return (1);
 	}
-
-	return new_sockfd;
+	return sockfd;
 }
 
-void	Server::createSocket() 
+int		Server::createSocket() 
 {
-	char buffer[1024] = { 0 };
-
 	/*
 		int domain -> specifies communication domain We use AF_INET for processes connected by IPV6
 		int type -> communication type - SOCK_STREAM: TCP(reliable, connection oriented)
@@ -90,35 +86,47 @@ void	Server::createSocket()
 	if (sockfd == -1)
 	{
 		std::cerr << "Failed to create socket." << std::endl;
-		return ;
+		return (EXIT_FAILURE);
+	}
+	return sockfd;
+}
+
+void	Server::runSocket()
+{
+	char buffer[1024] = { 0 };
+
+	int sockfd = createSocket();
+	if (sockfd == 1)
+	{
+		std::cerr << "Failed to create socket." << std::endl;
+		exit(EXIT_FAILURE);
 	}
 	
-	/*
-		int socket -> Looks at the socket fd
-		int level -> We set this as SOL_SOCKET to manipulate options at the sockets API level
-		int option_name -> We set this to SO_REUSEADDR to allow re-using the same address and port combo on a socket.
-							This is useful when binding to an address and port that were recently used by a closed socket..
-							It helps avoid the "Address already in use" error. 
-							To enable this option we set `int reuseaddr` to 1
-
-		const void *option_value &&
-		socklen_t option_len -> identify a buffer in which the value for the requested options are returned
-	*/
 	setSocketOptions(sockfd);
 
 	bindSocket(sockfd);
 
-	listenSocket(sockfd);
+	if (listen(sockfd, 5) < 0)
+	{
+		close(sockfd);
+		std::cerr << "Failed to listen to socket" << std::endl;
+		exit(EXIT_FAILURE);
+	}
 
     std::cout << "Server listening on port" << " " << _port << std::endl;
 
-	int new_sockfd = acceptConnection(sockfd);
-	read(new_sockfd, buffer, 1024);
+	int client_socket = acceptConnection(sockfd);
+	if (client_socket == 1)
+	{
+		std::cerr << "Failed to accept connection." << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	read(client_socket, buffer, 1024);
     printf("%s\n", buffer);
 	std::string hello = "wtf bruh";
-    send(new_sockfd, NULL, 1000, 0);
+    send(client_socket, NULL, 1000, 0);
     printf("Hello message sent\n");
 
-	close(new_sockfd);
+	close(client_socket);
 	shutdown(sockfd, SHUT_RDWR);
 }
