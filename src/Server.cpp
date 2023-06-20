@@ -25,7 +25,7 @@ void	Server::setSocketOptions(int sockfd)
 	int reuseAddr = 1;
 	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuseAddr, sizeof(reuseAddr)) < 0)
 	{
-		std::cerr << "Faield to set socket option: SO_REUSEADDR." << std::endl;;
+		std::cerr << "Failed to set socket option: SO_REUSEADDR." << std::endl;;
 		return ;
 	}
 }
