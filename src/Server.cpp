@@ -9,6 +9,27 @@ Server::~Server()
 {
 }
 
+const char* Server::SocketFailure::what(void) const throw()
+{
+	return "Failed to create socket.";
+}
+
+int		Server::createSocket() 
+{
+	/*
+		int domain -> specifies communication domain We use AF_INET for processes connected by IPV6
+		int type -> communication type - SOCK_STREAM: TCP(reliable, connection oriented)
+		int protocol -> Protocol value for Internet Protocol(IP), which is 0. This is the same number 
+					which appears on protocol field in the IP header of a packet.(man protocols for more details)
+	*/
+	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockfd == -1)
+	{
+		throw SocketFailure();
+	}
+	return sockfd;
+}
+
 void	Server::setSocketOptions(int sockfd)
 {
 	/*
@@ -63,40 +84,47 @@ void	Server::bindSocket(int sockfd)
 
 int		Server::acceptConnection(int sockfd)
 {
-	int	sockfd;
+	int	new_sockfd;
 
-	sockfd = accept(sockfd, nullptr, nullptr);
-	if (sockfd < 0)
-	{	
-		close(sockfd);
-		return (1);
+	new_sockfd = accept(sockfd, NULL, NULL);
+	if (new_sockfd < 0)
+	{
+		close(new_sockfd);
+		throw SocketFailure();
 	}
-	return sockfd;
+	return new_sockfd;
 }
 
-int		Server::createSocket() 
+std::string Server::receiveMessage(int sockfd)
 {
-	/*
-		int domain -> specifies communication domain We use AF_INET for processes connected by IPV6
-		int type -> communication type - SOCK_STREAM: TCP(reliable, connection oriented)
-		int protocol -> Protocol value for Internet Protocol(IP), which is 0. This is the same number 
-					which appears on protocol field in the IP header of a packet.(man protocols for more details)
-	*/
-	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (sockfd == -1)
+	char buffer[MAX_BUFFER];
+	memset(buffer, 0, sizeof(buffer));
+
+	// Used to receive messages from a socket
+	ssize_t bytesRead = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
+	if (bytesRead < 0)
 	{
-		std::cerr << "Failed to create socket." << std::endl;
-		return (EXIT_FAILURE);
+		std::cout << "Nothing Received probably" << std::endl;
+		close(sockfd);
+		return (NULL);
 	}
-	return sockfd;
+	return std::string(buffer);
+}
+
+void	Server::sendMessage(int sockfd, const std::string &message)
+{
+	ssize_t bytesRead = send(sockfd, message.c_str(), message.size(), 0);
+	if (bytesRead < 0)
+	{
+		std::cout << "Sending failed" << std::endl;
+		close(sockfd);
+	}
 }
 
 void	Server::runSocket()
 {
-	char buffer[1024] = { 0 };
-
 	int sockfd = createSocket();
-	if (sockfd == 1)
+	if (sockfd == -1)
 	{
 		std::cerr << "Failed to create socket." << std::endl;
 		exit(EXIT_FAILURE);
@@ -115,18 +143,25 @@ void	Server::runSocket()
 
     std::cout << "Server listening on port" << " " << _port << std::endl;
 
-	int client_socket = acceptConnection(sockfd);
-	if (client_socket == 1)
+	while (true)
 	{
-		std::cerr << "Failed to accept connection." << std::endl;
-		exit(EXIT_FAILURE);
-	}
-	read(client_socket, buffer, 1024);
-    printf("%s\n", buffer);
-	std::string hello = "wtf bruh";
-    send(client_socket, NULL, 1000, 0);
-    printf("Hello message sent\n");
+		int clientSocket = acceptConnection(sockfd);
 
-	close(client_socket);
-	shutdown(sockfd, SHUT_RDWR);
+		std::string message = receiveMessage(clientSocket);
+		if (message.empty())
+		{
+			std::cout << "No Message" << std::endl;
+			close(clientSocket);
+			close(sockfd);
+			exit(EXIT_FAILURE);
+		}
+
+		std::cout << "Received Message: " << message;
+
+		sendMessage(clientSocket, message);
+
+		close(clientSocket);
+	}
+	
+	close(sockfd);
 }

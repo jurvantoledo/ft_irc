@@ -9,8 +9,15 @@ int main(int argc, char *argv[])
 	}
 	int port = atoi(argv[1]);
 
-	Server server(port, argv[2]);
+	try
+	{	
+		Server server(port, argv[2]);
 
-	server.runSocket();
+		server.runSocket();
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
 	return (0);
 }

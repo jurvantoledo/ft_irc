@@ -1,5 +1,6 @@
 #ifndef SERVER_H
 #define SERVER_H
+#include <stdlib.h>
 #include <iostream>
 #include <unistd.h>
 #include <string.h>
@@ -26,6 +27,12 @@ class Server
 		void	bindSocket(int sockfd);
 		void	listenForConnect(int sockfd);
 		int		acceptConnection(int sockfd);
+		void	sendMessage(int sockfd, const std::string &message);
+		std::string	receiveMessage(int sockfd);
+
+		class SocketFailure : public std::exception {
+			const char *what() const throw();
+		};
 };
 
 #endif
