@@ -84,13 +84,14 @@ void	Server::bindSocket(int sockfd)
 
 int		Server::acceptConnection(int sockfd)
 {
-	sockaddr_in serverAddress, clientAddress;
+	sockaddr_in clientAddress;
 	int	new_sockfd;
 
 	socklen_t clientAddresslen = sizeof(clientAddress);
 	new_sockfd = accept(sockfd, (struct sockaddr*)&clientAddress, &clientAddresslen);
 	if (new_sockfd < 0)
 	{
+		close(sockfd);
 		close(new_sockfd);
 		throw SocketFailure();
 	}
@@ -103,7 +104,7 @@ std::string Server::receiveMessage(int sockfd)
 	memset(buffer, 0, sizeof(buffer));
 
 	// Used to receive messages from a socket
-	ssize_t bytesRead = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
+	ssize_t bytesRead = recv(sockfd, buffer, sizeof(buffer) - 2, 0);
 	if (bytesRead < 0)
 	{
 		std::cout << "Nothing Received probably" << std::endl;
@@ -123,7 +124,7 @@ void	Server::handleMessage(int sockfd, const std::string &message)
 	}
 }
 
-void	Server::runSocket()
+void	Server::runServer()
 {
 	int sockfd = createSocket();
 	if (sockfd == -1)
@@ -145,10 +146,9 @@ void	Server::runSocket()
 
     std::cout << "Server listening on port" << " " << _port << std::endl;
 
-	int clientSocket;
 	while (true)
 	{
-		clientSocket = acceptConnection(sockfd);
+		int clientSocket = acceptConnection(sockfd);
 
 		std::string message = receiveMessage(clientSocket);
 		if (message.empty())

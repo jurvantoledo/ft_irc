@@ -17,12 +17,13 @@ class Server
 	private:
 		int	_port;
 		std::string _password;
+		struct pollfd	*_pollfds;
 
 	public:
 		Server(int &port, std::string password);
 		~Server();
 
-		void	runSocket();
+		void	runServer();
 		int		createSocket();
 		void	setSocketOptions(int sockfd);
 		void	bindSocket(int sockfd);
