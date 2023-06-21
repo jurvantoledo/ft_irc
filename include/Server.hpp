@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <poll.h>
 
 #define MAX_BUFFER 4096
 
@@ -27,7 +28,7 @@ class Server
 		void	bindSocket(int sockfd);
 		void	listenForConnect(int sockfd);
 		int		acceptConnection(int sockfd);
-		void	sendMessage(int sockfd, const std::string &message);
+		void	handleMessage(int sockfd, const std::string &message);
 		std::string	receiveMessage(int sockfd);
 
 		class SocketFailure : public std::exception {

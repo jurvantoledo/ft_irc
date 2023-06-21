@@ -84,9 +84,11 @@ void	Server::bindSocket(int sockfd)
 
 int		Server::acceptConnection(int sockfd)
 {
+	sockaddr_in serverAddress, clientAddress;
 	int	new_sockfd;
 
-	new_sockfd = accept(sockfd, NULL, NULL);
+	socklen_t clientAddresslen = sizeof(clientAddress);
+	new_sockfd = accept(sockfd, (struct sockaddr*)&clientAddress, &clientAddresslen);
 	if (new_sockfd < 0)
 	{
 		close(new_sockfd);
@@ -111,7 +113,7 @@ std::string Server::receiveMessage(int sockfd)
 	return std::string(buffer);
 }
 
-void	Server::sendMessage(int sockfd, const std::string &message)
+void	Server::handleMessage(int sockfd, const std::string &message)
 {
 	ssize_t bytesRead = send(sockfd, message.c_str(), message.size(), 0);
 	if (bytesRead < 0)
@@ -143,9 +145,10 @@ void	Server::runSocket()
 
     std::cout << "Server listening on port" << " " << _port << std::endl;
 
+	int clientSocket;
 	while (true)
 	{
-		int clientSocket = acceptConnection(sockfd);
+		clientSocket = acceptConnection(sockfd);
 
 		std::string message = receiveMessage(clientSocket);
 		if (message.empty())
@@ -158,10 +161,9 @@ void	Server::runSocket()
 
 		std::cout << "Received Message: " << message;
 
-		sendMessage(clientSocket, message);
+		handleMessage(clientSocket, message);
 
 		close(clientSocket);
 	}
-	
 	close(sockfd);
 }

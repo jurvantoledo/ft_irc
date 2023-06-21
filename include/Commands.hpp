@@ -3,15 +3,25 @@
 
 class Commands
 {
-    typedef enum {
+    typedef enum userCmds {
         NICK,
         USER,
-        QUIT,
+        PASS
+    };
+
+    typedef enum serverCmds {
+        PING,
+        OPEN,
+        KILL
+    };
+
+    typedef enum channelCmds {
         JOIN,
         PART,
-        LIST,
+        INVITE,
+        KICK,
         PRIVMSG,
-        WHO
+        NOTICE
     };
 
     private:
