@@ -1,6 +1,6 @@
 #include "../include/Server.hpp"
 
-Server::Server(int &port, std::string password) : _port(port), _password(password)
+Server::Server(int &port, std::string password) : _port(port), _password(password), _onlineClients(0), _pollfds(new struct pollfd[MAX_ONLINE])
 {
 	std::cout << port << " " << password << std::endl;
 }
@@ -82,7 +82,7 @@ void	Server::bindSocket(int sockfd)
 // 	}
 // }
 
-int		Server::acceptConnection(int sockfd)
+int		Server::getConnectedMan(int sockfd)
 {
 	sockaddr_in clientAddress;
 	int	new_sockfd;
@@ -124,6 +124,37 @@ void	Server::handleMessage(int sockfd, const std::string &message)
 	}
 }
 
+void	Server::addToPoll(int sockfd)
+{
+	int	max_online_clients = MAX_ONLINE;
+	if (this->_onlineClients == MAX_ONLINE)
+	{
+		max_online_clients *= 2;
+		this->_pollfds = (struct pollfd *)realloc(this->_pollfds, max_online_clients);
+	}
+	this->_pollfds[this->_onlineClients].fd = sockfd;
+	this->_pollfds[this->_onlineClients].events = POLLIN;
+	// this->_clients.insert(std::pair<int, Client *>(newfd, new Client(newfd)));
+	this->_onlineClients++;
+};
+
+void	Server::newClient(int sockfd)
+{
+	int	newfd;
+
+	newfd = getConnectedMan(sockfd);
+	if (newfd == -1)
+	{
+		std::cout << "Failed like I always do" << std::endl;
+		return ;
+	}
+	else
+	{
+		/* code */
+	}
+	
+}
+
 void	Server::runServer()
 {
 	int sockfd = createSocket();
@@ -146,24 +177,54 @@ void	Server::runServer()
 
     std::cout << "Server listening on port" << " " << _port << std::endl;
 
+	memset(_pollfds, 0, sizeof(pollfd));
+
+	_pollfds[0].fd = sockfd;
+	_pollfds[0].events = POLLIN;
+
+
 	while (true)
 	{
-		int clientSocket = acceptConnection(sockfd);
-
-		std::string message = receiveMessage(clientSocket);
-		if (message.empty())
+		int	active = poll(_pollfds, MAX_ONLINE, -1);
+		if (active == -1)
 		{
-			std::cout << "No Message" << std::endl;
-			close(clientSocket);
-			close(sockfd);
+			std::cout << "poll() failed" << std::endl;
 			exit(EXIT_FAILURE);
 		}
+		
+		for (int i = 0; i < MAX_ONLINE; i++)
+		{
+			if (_pollfds[i].revents & POLLIN)
+			{
+				if (_pollfds[i].fd == sockfd )
+				{
+					newClient(_pollfds[i].fd);
+				}
+				else
+				{
+					std::cout << "Client already exists" << std::endl;
+				}
+				
+			}
+			
+		}
+		
+		// int clientSocket = acceptConnection(sockfd);
 
-		std::cout << "Received Message: " << message;
+		// std::string message = receiveMessage(clientSocket);
+		// if (message.empty())
+		// {
+		// 	std::cout << "No Message" << std::endl;
+		// 	close(clientSocket);
+		// 	close(sockfd);
+		// 	exit(EXIT_FAILURE);
+		// }
 
-		handleMessage(clientSocket, message);
+		// std::cout << "Received Message: " << message;
 
-		close(clientSocket);
+		// handleMessage(clientSocket, message);
+
+		// close(clientSocket);
 	}
 	close(sockfd);
 }

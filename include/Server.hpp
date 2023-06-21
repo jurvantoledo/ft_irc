@@ -11,12 +11,14 @@
 #include <poll.h>
 
 #define MAX_BUFFER 4096
+#define MAX_ONLINE 10
 
 class Server
 {
 	private:
 		int	_port;
 		std::string _password;
+		int	_onlineClients;
 		struct pollfd	*_pollfds;
 
 	public:
@@ -28,7 +30,9 @@ class Server
 		void	setSocketOptions(int sockfd);
 		void	bindSocket(int sockfd);
 		void	listenForConnect(int sockfd);
-		int		acceptConnection(int sockfd);
+		void	newClient(int sockfd);
+		void	addToPoll(int sockfd);
+		int		getConnectedMan(int sockfd);
 		void	handleMessage(int sockfd, const std::string &message);
 		std::string	receiveMessage(int sockfd);
 
