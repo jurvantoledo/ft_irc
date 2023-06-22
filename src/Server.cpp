@@ -1,7 +1,7 @@
 #include "../include/Server.hpp"
 
 Server::Server(int &port, std::string password) : _port(port), _password(password), \
-				_onlineClients(0), _pollfds(0), _clients()
+				_onlineClients(0), _pollfds(1), _clients()
 {
 	std::cout << "Server constructor is called\n" << std::endl;
 }
@@ -181,7 +181,6 @@ void	Server::stayConnectedMan()
 			std::cerr << "Poll() Failed" << std::endl;
 			return ;
 		}
-		std::cout << "LOL" << std::endl;
 
 		std::vector<pollfd>::iterator it = _pollfds.begin();
 		while (it != _pollfds.end())
@@ -199,6 +198,7 @@ void	Server::stayConnectedMan()
 				else
 				{
 					std::cout << "LOL" << std::endl;
+					break;
 					// std::string message = receiveMessage(it->fd);
                     // if (message.empty())
                     // {
