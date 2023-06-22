@@ -11,7 +11,8 @@ MKDIR	= mkdir -p
 SRC		= $(addprefix src/, $(addsuffix .cpp, \
 			main \
 			Server \
-			User))
+			User \
+			Client))
 
 all: $(NAME)
 

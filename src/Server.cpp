@@ -1,13 +1,12 @@
 #include "../include/Server.hpp"
 
-Server::Server(int &port, std::string password) : _port(port), _password(password), _onlineClients(0), _pollfds(new struct pollfd[MAX_ONLINE])
+Server::Server(int &port, std::string password) : _port(port), _password(password), \
+				_onlineClients(0), _pollfds(0), _clients()
 {
-	std::cout << port << " " << password << std::endl;
+	std::cout << "Server constructor is called\n" << std::endl;
 }
 
-Server::~Server()
-{
-}
+Server::~Server() {}
 
 const char* Server::SocketFailure::what(void) const throw()
 {
@@ -72,23 +71,12 @@ void	Server::bindSocket(int sockfd)
 	}
 }
 
-// void	Server::listenForConnect(int sockfd)
-// {
-// 	if (listen(sockfd, 5) < 0)
-// 	{
-// 		close(sockfd);
-// 		std::cerr << "Failed to listen to socket" << std::endl;
-// 		exit(EXIT_FAILURE);
-// 	}
-// }
-
-int		Server::getConnectedMan(int sockfd)
+int		Server::getAcceptedMan(int sockfd)
 {
 	sockaddr_in clientAddress;
-	int	new_sockfd;
-
 	socklen_t clientAddresslen = sizeof(clientAddress);
-	new_sockfd = accept(sockfd, (struct sockaddr*)&clientAddress, &clientAddresslen);
+
+	int new_sockfd = accept(sockfd, (struct sockaddr*)&clientAddress, &clientAddresslen);
 	if (new_sockfd < 0)
 	{
 		close(sockfd);
@@ -109,7 +97,7 @@ std::string Server::receiveMessage(int sockfd)
 	{
 		std::cout << "Nothing Received probably" << std::endl;
 		close(sockfd);
-		return (NULL);
+		return ("");
 	}
 	return std::string(buffer);
 }
@@ -124,38 +112,41 @@ void	Server::handleMessage(int sockfd, const std::string &message)
 	}
 }
 
-void	Server::addToPoll(int sockfd)
+void	Server::addClient(int client_fd)
 {
-	int	max_online_clients = MAX_ONLINE;
-	if (this->_onlineClients == MAX_ONLINE)
+	struct pollfd client_poll;
+	Client new_client(client_fd);
+
+	client_poll.fd = client_fd;
+	client_poll.events = POLLIN | POLLOUT;
+	_pollfds.push_back(client_poll);
+
+	// _clients.insert(std::pair<int, Client>(client_fd, new_client));
+	std::cout << "[Server]: added the client # " << client_fd << std::endl;
+}
+
+int	Server::newClientConnection(int sockfd)
+{
+	int	client_fd = getAcceptedMan(sockfd);
+	if (client_fd == -1)
 	{
-		max_online_clients *= 2;
-		this->_pollfds = (struct pollfd *)realloc(this->_pollfds, max_online_clients);
+		std::cout << "Accept() function failed" << std::endl;
+		return (1);
 	}
-	this->_pollfds[this->_onlineClients].fd = sockfd;
-	this->_pollfds[this->_onlineClients].events = POLLIN;
-	// this->_clients.insert(std::pair<int, Client *>(newfd, new Client(newfd)));
-	this->_onlineClients++;
-};
-
-void	Server::newClient(int sockfd)
-{
-	int	newfd;
-
-	newfd = getConnectedMan(sockfd);
-	if (newfd == -1)
+	if (_pollfds.size() - 1 < MAX_ONLINE)
 	{
-		std::cout << "Failed like I always do" << std::endl;
-		return ;
+		addClient(client_fd);
 	}
 	else
 	{
-		/* code */
+		std::cout << "Too many clients bruh" << std::endl;
+		close(client_fd);
+		return (1);
 	}
-	
+	return (0);
 }
 
-void	Server::runServer()
+void	Server::stayConnectedMan()
 {
 	int sockfd = createSocket();
 	if (sockfd == -1)
@@ -163,9 +154,7 @@ void	Server::runServer()
 		std::cerr << "Failed to create socket." << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	
 	setSocketOptions(sockfd);
-
 	bindSocket(sockfd);
 
 	if (listen(sockfd, 5) < 0)
@@ -177,54 +166,52 @@ void	Server::runServer()
 
     std::cout << "Server listening on port" << " " << _port << std::endl;
 
-	memset(_pollfds, 0, sizeof(pollfd));
+	struct	pollfd server_poll;
+	server_poll.fd = sockfd;
+	server_poll.events = POLLIN;
 
-	_pollfds[0].fd = sockfd;
-	_pollfds[0].events = POLLIN;
-
-
-	while (true)
+	_pollfds.push_back(server_poll);
+	while (1)
 	{
-		int	active = poll(_pollfds, MAX_ONLINE, -1);
+		int	active = poll(&_pollfds[0], _pollfds.size(), -1);
 		if (active == -1)
 		{
-			std::cout << "poll() failed" << std::endl;
-			exit(EXIT_FAILURE);
+			if (errno == EINTR)
+				break ;
+			std::cerr << "Poll() Failed" << std::endl;
+			return ;
 		}
-		
-		for (int i = 0; i < MAX_ONLINE; i++)
+		std::cout << "LOL" << std::endl;
+
+		std::vector<pollfd>::iterator it = _pollfds.begin();
+		while (it != _pollfds.end())
 		{
-			if (_pollfds[i].revents & POLLIN)
+			if (it->revents & POLLIN)
 			{
-				if (_pollfds[i].fd == sockfd )
+				if (it->fd == sockfd)
 				{
-					newClient(_pollfds[i].fd);
+					if (newClientConnection(sockfd) != 0)
+					{
+						std::cerr << "Does this even work bro" << std::endl;;
+						return ;
+					}
 				}
 				else
 				{
-					std::cout << "Client already exists" << std::endl;
+					std::cout << "LOL" << std::endl;
+					// std::string message = receiveMessage(it->fd);
+                    // if (message.empty())
+                    // {
+                    //     // Handle client disconnection
+                    //     close(it->fd);
+                    //     it = _pollfds.erase(it);
+                    //     continue;
+                    // }
+                    // handleMessage(it->fd, message);
 				}
-				
 			}
-			
+			it++;
 		}
-		
-		// int clientSocket = acceptConnection(sockfd);
-
-		// std::string message = receiveMessage(clientSocket);
-		// if (message.empty())
-		// {
-		// 	std::cout << "No Message" << std::endl;
-		// 	close(clientSocket);
-		// 	close(sockfd);
-		// 	exit(EXIT_FAILURE);
-		// }
-
-		// std::cout << "Received Message: " << message;
-
-		// handleMessage(clientSocket, message);
-
-		// close(clientSocket);
 	}
 	close(sockfd);
 }

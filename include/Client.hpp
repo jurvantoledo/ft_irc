@@ -1,13 +1,15 @@
 #ifndef CLIENT_H
 
 #define CLIENT_H
+#include <iostream>
 
 class Client
 {
 	private:
-		/* data */
+		int				_client_fd;
+
 	public:
-		Client(/* args */);
+		Client(int client_fd);
 		~Client();
 };
 

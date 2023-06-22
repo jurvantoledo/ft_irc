@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	{	
 		Server server(port, argv[2]);
 
-		server.runServer();
+		server.stayConnectedMan();
 	}
 	catch(const std::exception& e)
 	{
