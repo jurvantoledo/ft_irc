@@ -1,4 +1,4 @@
-#include "../include/Server.hpp"
+#include "../../include/Server.hpp"
 
 Server::Server(int &port, std::string password) : _port(port), _password(password), \
 				_onlineClients(0), _pollfds(), _clients()
@@ -112,42 +112,9 @@ void	Server::handleMessage(int sockfd, const std::string &message)
 	}
 }
 
-void	Server::addClient(int client_fd)
-{
-	struct pollfd client_poll;
-	Client new_client(client_fd);
-
-	client_poll.fd = client_fd;
-	client_poll.events = POLLIN | POLLOUT;
-	_pollfds.push_back(client_poll);
-
-	// _clients.insert(std::pair<int, Client>(client_fd, new_client));
-	std::cout << "[Server]: added the client # " << client_fd << std::endl;
-}
-
-int	Server::newClientConnection(int sockfd)
-{
-	int	client_fd = getAcceptedMan(sockfd);
-	if (client_fd == -1)
-	{
-		std::cout << "Accept() function failed" << std::endl;
-		return (1);
-	}
-	if (_pollfds.size() - 1 < MAX_ONLINE)
-	{
-		addClient(client_fd);
-	}
-	else
-	{
-		std::cout << "Too many clients bruh" << std::endl;
-		close(client_fd);
-		return (1);
-	}
-	return (0);
-}
-
 void	Server::stayConnectedMan()
 {
+	char buffer[MAX_BUFFER];
 	int sockfd = createSocket();
 	if (sockfd == -1)
 	{
@@ -176,41 +143,41 @@ void	Server::stayConnectedMan()
 		int	active = poll(&_pollfds[0], _pollfds.size(), -1);
 		if (active == -1)
 		{
-			if (errno == EINTR)
-				break ;
-			std::cerr << "Poll() Failed" << std::endl;
+			std::cout << "Poll() failed" << std::endl;
 			return ;
 		}
-
-		std::vector<pollfd>::iterator it = _pollfds.begin();
-		while (it != _pollfds.end())
+		
+		if (_pollfds[0].revents & POLLIN)
 		{
-			if (it->revents & POLLIN)
+			if (newClientConnection(sockfd) != 0)
 			{
-				if (it->fd == sockfd)
-				{
-					if (newClientConnection(sockfd) != 0)
-					{
-						std::cerr << "Does this even work bro" << std::endl;;
-						return ;
-					}
-				}
-				else
-				{
-					std::cout << "LOL" << std::endl;
-					std::string message = receiveMessage(it->fd);
-                    if (message.empty())
-                    {
-                        // Handle client disconnection
-                        close(it->fd);
-                        it = _pollfds.erase(it);
-                        break ;
-                    }
-                    handleMessage(it->fd, message);
-				}
+				close(sockfd);
+				return ;
 			}
-			it++;
+			else
+			{
+				for (size_t i = 1; i < _pollfds.size(); i++)
+				{
+					if (_pollfds[i].revents & POLLIN)
+					{
+						memset(buffer, 0, MAX_BUFFER);
+						int	bytesRead = recv(_pollfds[i].fd, buffer, MAX_BUFFER, 0);
+						if (bytesRead <= 0) {
+							// Connection closed by client
+							close(_pollfds[i].fd);
+							std::cout << "Nothing to read: " << std::endl;
+							_pollfds.erase(_pollfds.begin() + i);
+							continue;
+						}
+						handleMessage(sockfd, buffer);
+					}
+					
+				}
+				
+			}
+			
 		}
+		
 	}
 	close(sockfd);
 }
