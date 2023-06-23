@@ -10,9 +10,12 @@ MKDIR	= mkdir -p
 
 SRC		= $(addprefix src/, $(addsuffix .cpp, \
 			main \
-			Server \
-			User \
-			Client))
+			$(addprefix Server/, \
+			Server) \
+			$(addprefix User/, \
+			User) \
+			$(addprefix Client/, \
+			Client)))
 
 all: $(NAME)
 
@@ -20,7 +23,10 @@ $(NAME): $(OBJS)
 	$(CC) $(OBJS) $(HEADERS) -o $(NAME)
 
 objs/%.o: src/%.cpp
-	$(MKDIR) objs
+	@$(MKDIR) objs
+	@$(MKDIR) objs/Server
+	@$(MKDIR) objs/User
+	@$(MKDIR) objs/Client
 	$(CC) $(CFLAGS) -o $@ -c $< $(HEADERS)
 
 clean:
