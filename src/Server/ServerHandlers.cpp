@@ -1,13 +1,15 @@
 #include "../../include/Server.hpp"
+#include "../../include/Client.hpp"
 
 Client*	Server::getClient(int fd)
 {
 	return (this->_clients.at(fd));
 }
 
-void	Server::handleData(int socket, Client*	client)
+void	Server::handleData(int socket, Client* client)
 {
-	std::cout << "LOL" << std::endl;
+	
+	client->receiveMessage(client->getSocket());
 }
 
 void	Server::addToPoll(int fd)

@@ -17,14 +17,23 @@ class Client
 		Client(int client_fd);
 		~Client();
 
-		void		handleMessage(int socket, std::string packet);
-		std::string receiveMessage();
+		std::string		handleMessage();
+		void			receiveMessage(int socket);
 
 		// Getters
 		int			getSocket();
+
 		// Setters
 		void		setSocket(int fd);
 
+		// Exceptions
+		class MessageException : public std::exception {
+			private:
+				const char		*_reason;
+			public:
+				MessageException(const char *reason): _reason(reason) {}
+				const char *what() const throw() { return _reason; }
+		};
 };
 
 #endif

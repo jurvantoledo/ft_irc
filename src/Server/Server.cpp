@@ -52,22 +52,17 @@ void	Server::stayConnectedMan()
 				close(sockfd);
 				continue ;
 			}
-			else
-			{
-				for (size_t i = 1; i < this->_pollfds.size(); i++)
-				{
-					pollfd& pfds = this->_pollfds[i];
-					client = this->getClient(pfds.fd);
-					if (pfds.revents & POLLIN)
-					{
-						handleData(pfds.fd, client);
-					}
-				}
-				
-			}
-			
 		}
-		
+
+		for (size_t i = 1; i < this->_pollfds.size(); i++)
+		{
+			pollfd& pfds = this->_pollfds[i];
+			client = this->getClient(pfds.fd);
+			if (pfds.revents & POLLIN)
+			{
+				handleData(pfds.fd, client);
+			}
+		}
 	}
 	close(sockfd);
 }
