@@ -1,21 +1,34 @@
 #include "../../include/Server.hpp"
 
-void	Server::addToPoll(int sockfd)
+Client*	Server::getClient(int fd)
+{
+	return (this->_clients.at(fd));
+}
+
+void	Server::handleData(int socket, Client*	client)
+{
+	std::cout << "LOL" << std::endl;
+}
+
+void	Server::addToPoll(int fd)
 {
 	struct pollfd client_poll;
-	Client new_client(sockfd);
+	Client *new_client;
 
-	client_poll.fd = sockfd;
-	client_poll.events = POLLIN | POLLOUT;
-	_pollfds.push_back(client_poll);
+	new_client = new Client(fd);
 
-	// _clients.insert(std::pair<int, Client>(client_fd, new_client));
-	std::cout << "[Server]: added the client # " << sockfd << std::endl;
+	client_poll.fd = fd;
+	client_poll.events = POLLIN | POLLHUP;
+	this->_pollfds.push_back(client_poll);
+	
+	this->_clients.insert(std::pair<int, Client *>(client_poll.fd, new_client));
+	std::cout << "[Server]: added the client # " << fd << std::endl;
 }
 
 int	Server::newClientConnection(int sockfd)
 {
 	int	client_fd = getAcceptedMan(sockfd);
+
 	if (client_fd == -1)
 	{
 		std::cout << "Accept() function failed" << std::endl;

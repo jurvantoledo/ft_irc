@@ -3,7 +3,7 @@ NAME	= ircserv
 OBJS	= $(subst src, objs, $(SRC:.cpp=.o))
 
 CC		= c++
-CFLAGS	= -Wall -Werror -Wextra -std=c++98
+CFLAGS	= -std=c++98
 HEADERS	= -I include
 RM		= rm -rf
 MKDIR	= mkdir -p
@@ -12,7 +12,8 @@ SRC		= $(addprefix src/, $(addsuffix .cpp, \
 			main \
 			$(addprefix Server/, \
 			Server \
-			ServerHandlers) \
+			ServerHandlers \
+			Networking) \
 			$(addprefix User/, \
 			User) \
 			$(addprefix Client/, \

@@ -13,17 +13,18 @@
 #include <map>
 #include "Client.hpp"
 
-#define MAX_BUFFER 4096
+#define MAX_BUFFER 1024
 #define MAX_ONLINE 10
 
 class Server
 {
 	private:
+		int	_socket; 
 		int	_port;
 		std::string _password;
 		int	_onlineClients;
     	std::vector<pollfd> _pollfds;
-		std::map<int, Client> _clients;
+		std::map<int, Client *> _clients;
 
 	public:
 		Server(int &port, std::string password);
@@ -33,13 +34,11 @@ class Server
 		int		createSocket();
 		void	setSocketOptions(int sockfd);
 		void	bindSocket(int sockfd);
-		void	listenForConnect(int sockfd);
 		int		newClientConnection(int sockfd);
-		void	addClient(int client_fd);
-		void	addToPoll(int sockfd);
+		Client	*getClient(int fd);
+		void	addToPoll(int fd);
 		int		getAcceptedMan(int sockfd);
-		void	handleMessage(int sockfd, const std::string &message);
-		std::string	receiveMessage(int sockfd);
+		void	handleData(int socket, Client* client);
 
 		class SocketFailure : public std::exception {
 			const char *what() const throw();
