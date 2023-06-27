@@ -38,7 +38,7 @@ class Server
 		Client	*getClient(int fd);
 		void	addToPoll(int fd);
 		int		getAcceptedMan(int sockfd);
-		void	handleData(int socket, Client* client);
+		bool	handleData(int socket, Client* client);
 
 		class SocketFailure : public std::exception {
 			const char *what() const throw();

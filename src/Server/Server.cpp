@@ -20,7 +20,7 @@ void	Server::stayConnectedMan()
 	}
 	setSocketOptions(sockfd);
 	bindSocket(sockfd);
-
+ 
 	if (listen(sockfd, 5) < 0)
 	{
 		close(sockfd);
@@ -60,8 +60,16 @@ void	Server::stayConnectedMan()
 			client = this->getClient(pfds.fd);
 			if (pfds.revents & POLLIN)
 			{
-				handleData(pfds.fd, client);
+				if (handleData(pfds.fd, client) != true)
+					return ;
 			}
+
+			if (pfds.revents & POLLOUT)
+			{
+				/* code */
+			}
+
+			pfds.revents = 0;
 		}
 	}
 	close(sockfd);

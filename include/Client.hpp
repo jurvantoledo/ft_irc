@@ -18,7 +18,7 @@ class Client
 		~Client();
 
 		std::string		handleMessage();
-		void			receiveMessage(int socket);
+		bool			receiveMessage(int socket);
 
 		// Getters
 		int			getSocket();

@@ -17,7 +17,8 @@ SRC		= $(addprefix src/, $(addsuffix .cpp, \
 			$(addprefix User/, \
 			User) \
 			$(addprefix Client/, \
-			Client)))
+			Client \
+			Receive)))
 
 all: $(NAME)
 

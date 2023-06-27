@@ -6,10 +6,12 @@ Client*	Server::getClient(int fd)
 	return (this->_clients.at(fd));
 }
 
-void	Server::handleData(int socket, Client* client)
+bool	Server::handleData(int socket, Client* client)
 {
 	
-	client->receiveMessage(client->getSocket());
+	if (client->receiveMessage(client->getSocket()) != true)
+		return (false);
+	return (true);
 }
 
 void	Server::addToPoll(int fd)
