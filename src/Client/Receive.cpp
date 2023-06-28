@@ -1,29 +1,32 @@
 #include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
 
-std::string	Client::handleMessage()
+bool	Client::handleMessage()
 {
 	char	buffer[MAX_BUFFER];
-	std::string res;
 
 	memset(buffer, 0, sizeof(buffer));
-
-	ssize_t bytesRead = recv(this->_socket, buffer, MAX_BUFFER - 1, 0);
-	if (bytesRead == 0 )
+	if (this->_buffer.find("\r\n") == std::string::npos)
 	{
-		throw MessageException("Recv() disconnect noticed");
-	}
-	else if (bytesRead == -1)
-	{
-		throw MessageException("Recv() failure");
-	}
+		ssize_t bytesRead = recv(this->_socket, buffer, MAX_BUFFER - 1, 0);
 
-	return res += buffer;
+		this->_buffer += buffer;
+		if (bytesRead == -1)
+			throw Client::MessageException("Recv() failed");
+	}
+	
+	bool	messageComplete = this->_buffer.find("\r\n") != std::string::npos;
+
+	// Set the flag if a complete message is received
+	if (messageComplete) {
+		setDataToSend();
+	}
+	
+	return messageComplete;
 }
 
-bool Client::receiveMessage(int socket)
+std::string Client::receiveMessage(int socket)
 {
-	this->_buffer += handleMessage();
 	// Check for IRC PING command
     // if (this->_buffer.find("PING") != std::string::npos) {
     //     // Respond to PING with PONG
@@ -32,13 +35,13 @@ bool Client::receiveMessage(int socket)
     //  }
 
 	size_t pos = this->_buffer.find("\r\n");
-	if (pos != std::string::npos)
+	if (pos == std::string::npos)
 	{
-		std::string message = this->_buffer.substr(0, pos);
-		this->_buffer.erase(0, pos + 2);
-
-		std::cout << "Server with fd # " << socket << " Received message from client # " << message << std::endl;
-        return (true);
+        throw std::runtime_error("RECV Called without CRLF present in buffer");
 	}
-    return (false);
+	std::string packet = this->_buffer.substr(0, pos);
+			
+	std::cout << "[Server]: fd #" << socket << " Received message from client #" << packet << std::endl;
+
+    return packet;
 }

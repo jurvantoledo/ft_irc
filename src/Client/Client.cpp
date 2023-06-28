@@ -9,12 +9,11 @@ Client::Client()
 
 Client::Client(int client_fd) : _socket(client_fd)
 {
+	this->_dataToSend = false;
 	std::cout << "Client constructor for Client with fd: # " << _socket << std::endl;
 }
 
-Client::~Client()
-{
-}
+Client::~Client() {}
 
 int	Client::getSocket()
 {
@@ -24,4 +23,19 @@ int	Client::getSocket()
 void	Client::setSocket(int fd)
 {
 	this->_socket = fd;
+}
+
+bool	Client::getDataToSend()
+{
+	return (this->_dataToSend);
+}
+
+void	Client::setDataToSend()
+{
+	this->_dataToSend = true;
+}
+
+void	Client::clearDataToSend()
+{
+	this->_dataToSend = false;
 }

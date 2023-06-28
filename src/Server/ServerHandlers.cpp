@@ -9,9 +9,14 @@ Client*	Server::getClient(int fd)
 bool	Server::handleData(int socket, Client* client)
 {
 	
-	if (client->receiveMessage(client->getSocket()) != true)
-		return (false);
-	return (true);
+	if (client->handleMessage())
+	{
+		client->receiveMessage(client->getSocket());
+
+		client->setDataToSend();
+		return (true);
+	}
+	return (false);
 }
 
 void	Server::addToPoll(int fd)

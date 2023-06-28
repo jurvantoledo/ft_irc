@@ -60,13 +60,29 @@ void	Server::stayConnectedMan()
 			client = this->getClient(pfds.fd);
 			if (pfds.revents & POLLIN)
 			{
-				if (handleData(pfds.fd, client) != true)
-					return ;
+				handleData(pfds.fd, client);
 			}
 
 			if (pfds.revents & POLLOUT)
 			{
-				/* code */
+				for (size_t j = 1; j < this->_pollfds.size(); j++)
+				{
+					if (pfds.fd != this->_pollfds[j].fd) // Skip the current client
+					{
+						Client* targetClient = this->getClient(this->_pollfds[j].fd);
+						client->sendMessage(targetClient->getSocket());
+					}
+				}
+
+				// Clear the flag once the data is sent
+				client->clearDataToSend();
+			}
+
+			// Set the POLLOUT event for the client socket
+			if (client->hasDataToSend()) {
+				pfds.events |= POLLOUT;
+			} else {
+				pfds.events &= ~POLLOUT;
 			}
 
 			pfds.revents = 0;
