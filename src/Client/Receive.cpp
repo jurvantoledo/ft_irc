@@ -25,7 +25,7 @@ bool	Client::handleMessage()
 	return messageComplete;
 }
 
-std::string Client::receiveMessage(int socket)
+std::string Client::receiveMessage()
 {
 	// Check for IRC PING command
     // if (this->_buffer.find("PING") != std::string::npos) {
@@ -37,11 +37,11 @@ std::string Client::receiveMessage(int socket)
 	size_t pos = this->_buffer.find("\r\n");
 	if (pos == std::string::npos)
 	{
-        throw std::runtime_error("RECV Called without CRLF present in buffer");
+        throw std::runtime_error("Recv(): Called without CRLF present in buffer");
 	}
 	std::string packet = this->_buffer.substr(0, pos);
-			
-	std::cout << "[Server]: fd #" << socket << " Received message from client #" << packet << std::endl;
 
-    return packet;
+	std::cout << "[Server]: fd #" << _socket << " Received message from client #" << packet << std::endl;
+
+    return packet + "\r\n";
 }

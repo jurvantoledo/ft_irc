@@ -1,7 +1,7 @@
-#ifndef COMMANDS_H
-#define COMMANDS_H
+#ifndef COMMAND_H
+#define COMMAND_H
 
-class Commands
+class Command
 {
     typedef enum userCmds {
         NICK,
@@ -27,8 +27,8 @@ class Commands
     private:
         
     public:
-        Commands(/* args */);
-        ~Commands();
+        Command(/* args */);
+        ~Command();
 };
 
 #endif

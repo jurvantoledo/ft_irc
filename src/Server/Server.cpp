@@ -60,7 +60,8 @@ void	Server::stayConnectedMan()
 			client = this->getClient(pfds.fd);
 			if (pfds.revents & POLLIN)
 			{
-				handleData(pfds.fd, client);
+				if(!handleData(pfds.fd, client))
+					this->removePollFlag(pfds, POLLIN);
 			}
 
 			if (pfds.revents & POLLOUT)
@@ -80,9 +81,9 @@ void	Server::stayConnectedMan()
 
 			// Set the POLLOUT event for the client socket
 			if (client->hasDataToSend()) {
-				pfds.events |= POLLOUT;
+				this->setPollFlag(pfds, POLLOUT);
 			} else {
-				pfds.events &= ~POLLOUT;
+				this->removePollFlag(pfds, POLLOUT);
 			}
 
 			pfds.revents = 0;

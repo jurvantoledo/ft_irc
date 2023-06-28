@@ -11,7 +11,7 @@ bool	Server::handleData(int socket, Client* client)
 	
 	if (client->handleMessage())
 	{
-		client->receiveMessage(client->getSocket());
+		client->receiveMessage();
 
 		client->setDataToSend();
 		return (true);

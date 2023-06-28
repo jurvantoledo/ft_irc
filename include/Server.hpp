@@ -40,6 +40,12 @@ class Server
 		int		getAcceptedMan(int sockfd);
 		bool	handleData(int socket, Client* client);
 
+		//Getters
+
+		//Setters
+		void	setPollFlag(pollfd &pfd, short events);
+		void	removePollFlag(pollfd &pfd, short events);
+
 		class SocketFailure : public std::exception {
 			const char *what() const throw();
 		};

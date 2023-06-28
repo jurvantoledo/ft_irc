@@ -13,13 +13,16 @@ SRC		= $(addprefix src/, $(addsuffix .cpp, \
 			$(addprefix Server/, \
 			Server \
 			ServerHandlers \
-			Networking) \
+			Networking \
+			Poll) \
 			$(addprefix User/, \
 			User) \
 			$(addprefix Client/, \
 			Client \
 			Receive \
-			Send)))
+			Send) \
+			$(addprefix Channel/, \
+			Channel)))
 
 all: $(NAME)
 
@@ -31,6 +34,7 @@ objs/%.o: src/%.cpp
 	@$(MKDIR) objs/Server
 	@$(MKDIR) objs/User
 	@$(MKDIR) objs/Client
+	@$(MKDIR) objs/Channel
 	$(CC) $(CFLAGS) -o $@ -c $< $(HEADERS)
 
 clean:

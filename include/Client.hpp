@@ -19,7 +19,7 @@ class Client
 		~Client();
 
 		bool			handleMessage();
-		std::string		receiveMessage(int socket);
+		std::string		receiveMessage();
 		void			sendMessage(int socket);
 		bool			hasDataToSend();
 	
