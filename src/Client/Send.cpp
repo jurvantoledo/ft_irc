@@ -15,13 +15,11 @@ void Client::sendMessage(int socket)
 
     std::size_t pos = this->_buffer.find("\r\n");
 
-    // if (pos == std::string::npos) {
-    //     throw Client::MessageException("CLIENT Called without CRLF present in buffer");
-    // }
+    if (pos == std::string::npos) {
+        throw Client::MessageException("sendMessage(): Called without CRLF present in buffer");
+    }
 
-	std::cout << "HELLO" << std::endl;
-
-    std::string message = this->_buffer.substr(0, pos);
+    std::string message = this->_buffer.substr(0, pos) + "\n";
     ssize_t bytesRead = send(socket, message.c_str(), message.length(), 0);
     if (bytesRead == -1) {
         throw std::runtime_error("Send() failed");

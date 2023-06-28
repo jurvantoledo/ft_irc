@@ -9,10 +9,10 @@ bool	Client::handleMessage()
 	if (this->_buffer.find("\r\n") == std::string::npos)
 	{
 		ssize_t bytesRead = recv(this->_socket, buffer, MAX_BUFFER - 1, 0);
-
-		this->_buffer += buffer;
 		if (bytesRead == -1)
 			throw Client::MessageException("Recv() failed");
+
+		this->_buffer += buffer;
 	}
 	
 	bool	messageComplete = this->_buffer.find("\r\n") != std::string::npos;
