@@ -9,9 +9,15 @@ bool	Client::handleMessage()
 	if (this->_buffer.find("\r\n") == std::string::npos)
 	{
 		ssize_t bytesRead = recv(this->_socket, buffer, MAX_BUFFER - 1, 0);
+		if (bytesRead == -1 && errno == EAGAIN)
+		{
+			errno = 0;
+			return false;
+		}
 		if (bytesRead == -1)
 			throw Client::MessageException("Recv() failed");
 
+		buffer[bytesRead] = '\0';
 		this->_buffer += buffer;
 	}
 	

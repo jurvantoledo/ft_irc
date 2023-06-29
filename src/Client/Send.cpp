@@ -4,15 +4,13 @@
 bool	Client::hasDataToSend()
 {
 	if (this->_dataToSend)
-	{
 		return (true);
-	}
 	return (false);
 }
 
 void Client::sendMessage(int socket)
 {
-
+    std::cout << socket << std::endl;
     std::size_t pos = this->_buffer.find("\r\n");
 
     if (pos == std::string::npos) {
@@ -25,8 +23,9 @@ void Client::sendMessage(int socket)
         throw std::runtime_error("Send() failed");
     }
 
-    std::cout << "[Server]: fd #" << _socket << " Sent message to client #" << message << std::endl;
+    std::cout << "[Server]: fd #" << _socket << " Sent message to client #" << socket << " " << message << std::endl;
     
     // Erase the sent message from the buffer
     this->_buffer.erase(0, pos + 2);
+    this->clearDataToSend();
 }

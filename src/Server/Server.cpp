@@ -60,34 +60,50 @@ void	Server::stayConnectedMan()
 			client = this->getClient(pfds.fd);
 			if (pfds.revents & POLLIN)
 			{
-				if(!handleData(pfds.fd, client))
+				if(!this->handleData(pfds.fd, client))
 					this->removePollFlag(pfds, POLLIN);
 			}
 
 			if (pfds.revents & POLLOUT)
 			{
-				for (size_t j = 1; j < this->_pollfds.size(); j++)
+				if (client->hasDataToSend())
 				{
-					if (pfds.fd != this->_pollfds[j].fd) // Skip the current client
+					for (size_t j = 1; j < this->_pollfds.size(); j++)
 					{
-						Client* targetClient = this->getClient(this->_pollfds[j].fd);
-						client->sendMessage(targetClient->getSocket());
+						 // Skip the current client
+						if (pfds.fd != this->_pollfds[j].fd && client->hasDataToSend())
+						{
+							Client* targetClient = this->getClient(this->_pollfds[j].fd);
+							client->sendMessage(targetClient->getSocket());
+						}
 					}
+					this->removePollFlag(pfds, POLLOUT);
 				}
-
 				// Clear the flag once the data is sent
 				client->clearDataToSend();
 			}
-
-			// Set the POLLOUT event for the client socket
-			if (client->hasDataToSend()) {
-				this->setPollFlag(pfds, POLLOUT);
-			} else {
-				this->removePollFlag(pfds, POLLOUT);
-			}
-
 			pfds.revents = 0;
 		}
+		std::vector<pollfd>::iterator it = this->_pollfds.begin() + 1;
+		while (it != this->_pollfds.end())
+		{
+			if (!it->events)
+				it = this->_pollfds.erase(it);
+			else
+				it++;
+		}
+		
+		it = this->_pollfds.begin() + 1;
+		while (it != this->_pollfds.end())
+		{
+			client = this->getClient(it->fd);
+			if (client->hasDataToSend())
+			{
+				this->setPollFlag(*it, POLLOUT);
+			}
+			it++;
+		}
+		
 	}
 	close(sockfd);
 }

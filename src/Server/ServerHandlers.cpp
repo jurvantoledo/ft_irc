@@ -8,7 +8,6 @@ Client*	Server::getClient(int fd)
 
 bool	Server::handleData(int socket, Client* client)
 {
-	
 	if (client->handleMessage())
 	{
 		client->receiveMessage();
