@@ -68,15 +68,7 @@ void	Server::stayConnectedMan()
 			{
 				if (client->hasDataToSend())
 				{
-					for (size_t j = 1; j < this->_pollfds.size(); j++)
-					{
-						 // Skip the current client
-						if (pfds.fd != this->_pollfds[j].fd && client->hasDataToSend())
-						{
-							Client* targetClient = this->getClient(this->_pollfds[j].fd);
-							client->sendMessage(targetClient->getSocket());
-						}
-					}
+					this->processPacket(pfds, client);
 					this->removePollFlag(pfds, POLLOUT);
 				}
 				// Clear the flag once the data is sent

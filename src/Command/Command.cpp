@@ -2,6 +2,4 @@
 
 Command::Command(Server& server): _server(server) {}
 
-Command::~Command()
-{
-}
+Command::~Command() {}

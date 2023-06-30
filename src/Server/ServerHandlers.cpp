@@ -12,18 +12,6 @@ bool	Server::handleData(int socket, Client* client)
 	return (false);
 }
 
-void	Server::addToPoll(int fd)
-{
-	struct pollfd client_poll;
-
-	client_poll.fd = fd;
-	client_poll.events = POLLIN | POLLHUP;
-	this->_pollfds.push_back(client_poll);
-	
-	this->_clients.insert(std::pair<int, Client *>(client_poll.fd, this->AddClient(fd)));
-	std::cout << "[Server]: added the client # " << fd << std::endl;
-}
-
 int	Server::newClientConnection(int sockfd)
 {
 	int	client_fd = getAcceptedMan(sockfd);
@@ -35,4 +23,17 @@ int	Server::newClientConnection(int sockfd)
 	}
 	addToPoll(client_fd);
 	return (0);
+}
+
+void	Server::processPacket(pollfd& pfds, Client* client)
+{
+	for (size_t j = 1; j < this->_pollfds.size(); j++)
+	{
+		 // Skip the current client
+		if (pfds.fd != this->_pollfds[j].fd && client->hasDataToSend())
+		{
+			Client* targetClient = this->getClient(this->_pollfds[j].fd);
+			client->sendMessage(targetClient->getSocket());
+		}
+	}
 }

@@ -51,6 +51,8 @@ class Server
 		bool	handleData(int socket, Client* client);
 		void	setSocketOptions(int sockfd);
 
+		void	processPacket(pollfd& pfds, Client* client);
+
 		Client*	AddClient(int fd);
 		Client*	getClient(int fd);
 		Client*	removeClient(int fd);

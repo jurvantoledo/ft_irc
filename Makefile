@@ -24,11 +24,13 @@ SRC		= $(addprefix src/, $(addsuffix .cpp, \
 			User) \
 			$(addprefix Channel/, \
 			Channel) \
+			$(addprefix Arguments/, \
+			Arguments) \
 			$(addprefix Command/, \
 			Command \
-			CommandHandler) \
-			$(addprefix Arguments/, \
-			Arguments)))
+			CommandHandler \
+			$(addprefix Commands/, \
+			Nick))))
 
 all: $(NAME)
 
@@ -40,8 +42,9 @@ objs/%.o: src/%.cpp
 	@$(MKDIR) objs/Server
 	@$(MKDIR) objs/Client
 	@$(MKDIR) objs/Channel
-	@$(MKDIR) objs/Command
 	@$(MKDIR) objs/Arguments
+	@$(MKDIR) objs/Command
+	@$(MKDIR) objs/Command/Commands
 	$(CC) $(CFLAGS) -o $@ -c $< $(HEADERS)
 
 clean:

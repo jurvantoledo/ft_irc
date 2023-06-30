@@ -17,7 +17,7 @@ class CommandHandler
         CommandHandler(Server& server);
         ~CommandHandler();
 
-        void    addCommand(Client* client, std::string packet) const;
+        void    runCommand(Client* client, std::string packet) const;
 };
 
 
