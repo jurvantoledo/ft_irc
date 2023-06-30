@@ -25,7 +25,7 @@ class Client
 		void		setNickname(std::string nickname);
 		void		setUsername(std::string username);
 		void		setRealName(std::string realname);
-		void		setPassword(std::string pass);
+		void		setPassword(std::string password);
 
 	private:
 		int				_socket;

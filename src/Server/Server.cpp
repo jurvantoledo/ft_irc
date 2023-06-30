@@ -8,6 +8,8 @@ Server::Server(int &port, std::string password) : _port(port), _password(passwor
 
 Server::~Server() {}
 
+std::string	Server::getPassword() { return this->_password; }
+
 void	Server::stayConnectedMan()
 {
 	Client* client;

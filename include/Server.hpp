@@ -17,7 +17,7 @@
 #include "Channel.hpp"
 
 #define MAX_BUFFER 1024
-#define MAX_ONLINE 10
+#define MAX_ONLINE 100
 
 class Server
 {
@@ -39,6 +39,8 @@ class Server
 		Channel*	addChannel(std::string channel, std::string password);
 		Channel*	getChannel(std::string channel);
 		void		removeChannel(std::string channel);
+
+		std::string getPassword();
 
 		class SocketFailure : public std::exception {
 			const char *what() const throw();

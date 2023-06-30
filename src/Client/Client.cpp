@@ -14,27 +14,11 @@ Client::Client(int client_fd) : _socket(client_fd)
 
 Client::~Client() {}
 
-int	Client::getSocket()
-{
-	return (this->_socket);
-}
+// Getters
+int		Client::getSocket() { return (this->_socket); }
+bool	Client::getDataToSend() { return (this->_dataToSend); }
 
-void	Client::setSocket(int fd)
-{
-	this->_socket = fd;
-}
-
-bool	Client::getDataToSend()
-{
-	return (this->_dataToSend);
-}
-
-void	Client::setDataToSend()
-{
-	this->_dataToSend = true;
-}
-
-void	Client::clearDataToSend()
-{
-	this->_dataToSend = false;
-}
+// Setters
+void	Client::setSocket(int fd) { this->_socket = fd; }
+void	Client::setDataToSend() { this->_dataToSend = true; }
+void	Client::clearDataToSend() { this->_dataToSend = false; }
