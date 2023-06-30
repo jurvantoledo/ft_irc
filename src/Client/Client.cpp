@@ -1,9 +1,8 @@
 #include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
 
-Client::Client()
+Client::Client() : _socket(-1)
 {
-	_socket = this->getSocket();
 	std::cout << "Client constructor for Client with fd: # " << _socket << std::endl;
 }
 

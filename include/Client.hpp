@@ -9,6 +9,25 @@
 class Client
 {
 	private:
+		std::string _nickname;
+		std::string	_username;
+		std::string	_realname;
+		std::string	_password;
+
+	public:
+		// Getters
+		std::string	getNickname() const;
+		std::string	getUsername() const;
+		std::string	getRealName() const;
+		std::string	getPassword() const;
+
+		// Setters
+		void		setNickname(std::string nickname);
+		void		setUsername(std::string username);
+		void		setRealName(std::string realname);
+		void		setPassword(std::string pass);
+
+	private:
 		int				_socket;
 		std::string		_buffer;
 		bool			_dataToSend;
@@ -26,6 +45,7 @@ class Client
 		// Getters
 		int			getSocket();
 		bool		getDataToSend();
+
 
 		// Setters
 		void		setSocket(int fd);

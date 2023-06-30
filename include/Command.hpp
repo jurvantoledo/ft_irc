@@ -1,34 +1,21 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
+#include "Server.hpp"
+#include "Client.hpp"
+#include "Channel.hpp"
+#include "Arguments.hpp"
+
 class Command
 {
-    typedef enum userCmds {
-        NICK,
-        USER,
-        PASS
-    };
+    protected:
+    Server& _server;
 
-    typedef enum serverCmds {
-        PING,
-        OPEN,
-        KILL
-    };
-
-    typedef enum channelCmds {
-        JOIN,
-        PART,
-        INVITE,
-        KICK,
-        PRIVMSG,
-        NOTICE
-    };
-
-    private:
-        
     public:
-        Command(/* args */);
-        ~Command();
+        Command(Server& server);
+        virtual ~Command();
+
+        virtual void    ExecCommand(Client* client, Arguments* args) = 0;
 };
 
 #endif

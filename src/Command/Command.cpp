@@ -1,8 +1,6 @@
 #include "../../include/Command.hpp"
 
-Command::Command()
-{
-}
+Command::Command(Server& server): _server(server) {}
 
 Command::~Command()
 {

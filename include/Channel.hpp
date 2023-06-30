@@ -8,7 +8,7 @@ class Channel
 	private:
 		/* data */
 	public:
-		Channel(/* args */);
+		Channel(std::string& channel, std::string& password);
 		~Channel();
 };
 

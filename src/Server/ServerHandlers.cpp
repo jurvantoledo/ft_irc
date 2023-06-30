@@ -1,10 +1,4 @@
 #include "../../include/Server.hpp"
-#include "../../include/Client.hpp"
-
-Client*	Server::getClient(int fd)
-{
-	return (this->_clients.at(fd));
-}
 
 bool	Server::handleData(int socket, Client* client)
 {
@@ -21,15 +15,12 @@ bool	Server::handleData(int socket, Client* client)
 void	Server::addToPoll(int fd)
 {
 	struct pollfd client_poll;
-	Client *new_client;
-
-	new_client = new Client(fd);
 
 	client_poll.fd = fd;
 	client_poll.events = POLLIN | POLLHUP;
 	this->_pollfds.push_back(client_poll);
 	
-	this->_clients.insert(std::pair<int, Client *>(client_poll.fd, new_client));
+	this->_clients.insert(std::pair<int, Client *>(client_poll.fd, this->AddClient(fd)));
 	std::cout << "[Server]: added the client # " << fd << std::endl;
 }
 

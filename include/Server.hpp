@@ -13,6 +13,7 @@
 #include <vector>
 #include <map>
 #include "Client.hpp"
+#include "Channel.hpp"
 
 #define MAX_BUFFER 1024
 #define MAX_ONLINE 10
@@ -26,30 +27,37 @@ class Server
 		int	_onlineClients;
     	std::vector<pollfd> _pollfds;
 		std::map<int, Client *> _clients;
+		std::map<std::string, Channel*> _channels;
 
 	public:
 		Server(int &port, std::string password);
 		~Server();
 
-		void	stayConnectedMan();
-		int		createSocket();
-		void	setSocketOptions(int sockfd);
-		void	bindSocket(int sockfd);
-		int		newClientConnection(int sockfd);
-		Client	*getClient(int fd);
-		void	addToPoll(int fd);
-		int		getAcceptedMan(int sockfd);
-		bool	handleData(int socket, Client* client);
+		void		stayConnectedMan();
 
-		//Getters
-
-		//Setters
-		void	setPollFlag(pollfd &pfd, short events);
-		void	removePollFlag(pollfd &pfd, short events);
+		Channel*	addChannel(std::string channel, std::string password);
+		Channel*	getChannel(std::string channel);
+		void		removeChannel(std::string channel);
 
 		class SocketFailure : public std::exception {
 			const char *what() const throw();
 		};
+	
+	private:
+		int		createSocket();
+		void	bindSocket(int sockfd);
+		int		newClientConnection(int sockfd);
+		int		getAcceptedMan(int sockfd);
+		bool	handleData(int socket, Client* client);
+		void	setSocketOptions(int sockfd);
+
+		Client*	AddClient(int fd);
+		Client*	getClient(int fd);
+		Client*	removeClient(int fd);
+
+		void	addToPoll(int fd);
+		void	setPollFlag(pollfd &pfd, short events);
+		void	removePollFlag(pollfd &pfd, short events);
 };
 
 #endif
