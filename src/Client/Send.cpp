@@ -10,7 +10,6 @@ bool	Client::hasDataToSend()
 
 void Client::sendMessage(int socket)
 {
-    std::cout << socket << std::endl;
     std::size_t pos = this->_buffer.find("\r\n");
 
     if (pos == std::string::npos) {
