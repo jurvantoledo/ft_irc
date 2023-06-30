@@ -75,5 +75,10 @@ int		Server::getAcceptedMan(int sockfd)
 		close(new_sockfd);
 		throw SocketFailure();
 	}
+	if (fcntl(sockfd, F_SETFL, O_NONBLOCK) == -1)
+	{
+		throw std::runtime_error("fcntl() failed");
+	}
+	
 	return new_sockfd;
 }

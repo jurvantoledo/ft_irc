@@ -76,6 +76,7 @@ void	Server::stayConnectedMan()
 			}
 			pfds.revents = 0;
 		}
+
 		std::vector<pollfd>::iterator it = this->_pollfds.begin() + 1;
 		while (it != this->_pollfds.end())
 		{
