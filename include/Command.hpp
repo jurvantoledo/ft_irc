@@ -5,6 +5,7 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Arguments.hpp"
+#include <queue>
 
 class Channel;
 class Server;
@@ -18,7 +19,7 @@ class Command
         explicit Command(Server& server);
         virtual ~Command();
 
-        virtual void    ExecCommand(Client* client, Arguments* args) = 0;
+        virtual void    ExecCommand(Client* client, std::queue<std::string> args) = 0;
 };
 
 class nickCMD: public Command
@@ -27,7 +28,7 @@ class nickCMD: public Command
         nickCMD(Server& server);
         ~nickCMD();
 
-        void    ExecCommand(Client* client, Arguments* args);    
+        void    ExecCommand(Client* client, std::queue<std::string> args);    
 };
 
 class userCMD: public Command
@@ -36,7 +37,7 @@ class userCMD: public Command
         userCMD(Server& server);
         ~userCMD();
     
-    void    ExecCommand(Client* client, Arguments* args);    
+    void    ExecCommand(Client* client, std::queue<std::string> args);    
 };
 
 

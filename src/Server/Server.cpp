@@ -1,12 +1,15 @@
 #include "../../include/Server.hpp"
 
 Server::Server(int &port, std::string password) : _port(port), _password(password), \
-				_onlineClients(0), _pollfds(), _clients()
+				_onlineClients(0), _pollfds(), _clients(), _commandHandlers(new CommandHandler(*this))
 {
 	std::cout << "Server constructor is called\n" << std::endl;
 }
 
-Server::~Server() {}
+Server::~Server() 
+{
+	delete _commandHandlers;
+}
 
 std::string	Server::getPassword() { return this->_password; }
 
