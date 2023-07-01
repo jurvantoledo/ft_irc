@@ -4,9 +4,9 @@ bool	Server::handleData(int socket, Client* client)
 {
 	if (client->handleMessage())
 	{
-		client->receiveMessage();
+		// client->receiveMessage();
+		this->processPacket(client);
 
-		client->setDataToSend();
 		return (true);
 	}
 	return (false);
@@ -21,19 +21,18 @@ int	Server::newClientConnection(int sockfd)
 		std::cout << "Accept() function failed" << std::endl;
 		return (1);
 	}
-	addToPoll(client_fd);
+	this->addToPoll(client_fd);
 	return (0);
 }
 
-void	Server::processPacket(pollfd& pfds, Client* client)
+void	Server::processPacket(Client* client)
 {
-	for (size_t j = 1; j < this->_pollfds.size(); j++)
+	try
 	{
-		 // Skip the current client
-		if (pfds.fd != this->_pollfds[j].fd && client->hasDataToSend())
-		{
-			Client* targetClient = this->getClient(this->_pollfds[j].fd);
-			client->sendMessage(targetClient->getSocket());
-		}
+		this->_commandHandlers->Call(client, client->receiveMessage());
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
 	}
 }

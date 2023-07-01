@@ -4,12 +4,17 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Command.hpp"
+#include <queue>
+
+class Server;
+class Command;
 
 class CommandHandler
 {
     private:
         Server& _server;
         std::map<std::string, Command*> _commands;
+
     private:
         Command*    getCommand(std::string& command) const;
 

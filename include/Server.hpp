@@ -15,6 +15,7 @@
 #include <map>
 #include "Client.hpp"
 #include "Channel.hpp"
+#include "CommandHandler.hpp"
 
 #define MAX_BUFFER 1024
 #define MAX_ONLINE 100
@@ -29,6 +30,7 @@ class Server
     	std::vector<pollfd> _pollfds;
 		std::map<int, Client *> _clients;
 		std::map<std::string, Channel*> _channels;
+		const CommandHandler*	_commandHandlers;
 
 	public:
 		Server(int &port, std::string password);
@@ -54,7 +56,7 @@ class Server
 		bool	handleData(int socket, Client* client);
 		void	setSocketOptions(int sockfd);
 
-		void	processPacket(pollfd& pfds, Client* client);
+		void	processPacket(Client* client);
 
 		Client*	AddClient(int fd);
 		Client*	getClient(int fd);

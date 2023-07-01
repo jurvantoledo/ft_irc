@@ -52,7 +52,7 @@ void	Server::bindSocket(int sockfd)
 	// Set the Address Family
 	serverAddr.sin_family = AF_INET;
 	// The inet_addr() function shall convert the string pointed to by cp, in the standard IPv4 dotted decimal notation, to an integer value suitable for use as an Internet address.
-	serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	serverAddr.sin_addr.s_addr = INADDR_ANY;
 	// The htons function converts the unsigned short integer hostshort from host byte order to network byte order.
 	serverAddr.sin_port = htons(_port);
 	if (bind(sockfd, (sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)

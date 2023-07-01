@@ -25,7 +25,7 @@ bool	Client::handleMessage()
 
 	// Set the flag if a complete message is received
 	if (messageComplete) {
-		setDataToSend();
+		this->setDataToSend();
 	}
 	
 	return messageComplete;
@@ -49,5 +49,5 @@ std::string Client::receiveMessage()
 
 	std::cout << "[Server]: fd #" << _socket << " Received message from client #" << packet << std::endl;
 
-    return packet + "\r\n";
+    return packet;
 }
