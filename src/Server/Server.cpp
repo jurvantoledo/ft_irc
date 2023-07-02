@@ -13,18 +13,15 @@ Server::~Server()
 
 bool	Server::checkPassword(std::string password) { return this->_password == password; }
 
-void Server::broadcastMessage(Client* sender) {
-	// // Setting data to send for each client
-	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
-		Client* client = it->second;
-		client->setDataToSend();
-	}
-
-	// Sending message to each client (excluding the sender)
-	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
-		Client* client = it->second;
-		if (client != sender && client->hasDataToSend()) {
-			client->sendMessage(sender);
+void Server::broadcastMessage(pollfd& pfds, Client* client) {
+   	for (size_t j = 1; j < this->_pollfds.size(); j++)
+	{
+		// Skip the current client
+		if (pfds.fd != this->_pollfds[j].fd && client->hasDataToSend() && !client->getIsCommand())
+		{				
+			Client* targetClient = this->getClient(this->_pollfds[j].fd);
+			client->sendMessage(targetClient);
+			client->clearDataToSend();
 		}
 	}
 }
@@ -59,8 +56,7 @@ void	Server::stayConnectedMan()
 	this->_pollfds.push_back(server_poll);
 	while (1)
 	{
-		int	active = poll(&this->_pollfds[0], this->_pollfds.size(), -1);
-		if (active == -1)
+		if (poll(&this->_pollfds[0], this->_pollfds.size(), -1) == -1)
 		{
 			std::cout << "Poll() failed" << std::endl;
 			return ;
@@ -91,8 +87,10 @@ void	Server::stayConnectedMan()
 			{
 				if (client->hasDataToSend())
 				{
-					this->broadcastMessage(client);
+					this->broadcastMessage(pfds, client);
+					
 					this->removePollFlag(pfds, POLLOUT);
+
 					// Clear the flag once the data is sent
 					client->clearDataToSend();
 				}

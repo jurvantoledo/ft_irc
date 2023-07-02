@@ -44,23 +44,25 @@ class Client
 
 		bool			handleMessage();
 		std::string		receiveMessage();
-		std::string		getPacket();
 		void			sendMessage(Client* client);
+
 		bool			hasDataToSend();
 	
-		// Getters
 		int			getSocket();
-		bool		getDataToSend();
-		bool		getIsCommand();
-
-		// Setters
 		void		setSocket(int fd);
-		void		setPacket(std::string packet);
+
+		bool		getDataToSend();
 		void		setDataToSend();
-		void		setIsCommand();
 		void		clearDataToSend();
+
+		bool		getIsCommand();
+		void		setIsCommand();
 		void		clearCommand();
 
+
+		std::string		getPacket();
+		void			setPacket(std::string packet);
+	
 		// Exceptions
 		class MessageException : public std::exception {
 			private:

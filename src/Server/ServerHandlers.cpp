@@ -7,8 +7,6 @@ bool	Server::handleData(int socket, Client* client)
 		std::string message = client->receiveMessage();
 		this->processPacket(client, message);
 
-        client->setDataToSend();
-	
 		return (true);
 	}
 	// this->removeClient(socket);

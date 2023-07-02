@@ -56,7 +56,7 @@ class Server
 		bool	handleData(int socket, Client* client);
 		void	setSocketOptions(int sockfd);
 
-		void	broadcastMessage(Client* sender);
+		void	broadcastMessage(pollfd& pfds, Client* client);
 		void	processPacket(Client* client, std::string& message);
 
 		Client*	AddClient(int fd);

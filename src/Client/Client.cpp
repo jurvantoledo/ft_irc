@@ -24,16 +24,17 @@ Client::~Client()
 	close(this->_socket);
 }
 
-// Getters
 int		Client::getSocket() { return (this->_socket); }
-bool	Client::getDataToSend() { return (this->_dataToSend); }
-bool	Client::getIsCommand() { return (this->_isCommand); }
-std::string	Client::getPacket() { return (this->_packet); }
-
-// Setters
 void	Client::setSocket(int fd) { this->_socket = fd; }
-void	Client::setPacket(std::string packet) { this->_packet = packet; }
-void	Client::setDataToSend() { this->_dataToSend = true; }
+
+bool	Client::getIsCommand() { return (this->_isCommand); }
 void	Client::setIsCommand() { this->_isCommand = true; }
-void	Client::clearDataToSend() { this->_dataToSend = false; }
 void	Client::clearCommand() { this->_isCommand = false; }
+
+
+bool	Client::getDataToSend() { return (this->_dataToSend); }
+void	Client::setDataToSend() { this->_dataToSend = true; }
+void	Client::clearDataToSend() { this->_dataToSend = false; }
+
+std::string	Client::getPacket() { return (this->_packet); }
+void		Client::setPacket(std::string packet) { this->_packet = packet; }

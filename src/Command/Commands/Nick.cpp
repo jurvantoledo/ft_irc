@@ -20,4 +20,5 @@ void    nickCMD::ExecCommand(Client* client, std::queue<std::string> args)
     client->setNickname(nickname);
 
     std::cout << "Nickname is set for client #" << client->getSocket() << " nickname is -> " << nickname << std::endl;
+    client->clearDataToSend();
 }

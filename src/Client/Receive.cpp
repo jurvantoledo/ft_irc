@@ -23,8 +23,12 @@ bool	Client::handleMessage()
 	bool messageComplete = this->_buffer.find("\r\n") != std::string::npos;
 
 	// Set the flag if a complete message is received
-	if (messageComplete)
+	if (messageComplete && !this->_isCommand)
 		this->setDataToSend();
+	else
+	{
+		this->clearDataToSend();
+	}
 	
 	return messageComplete;
 }

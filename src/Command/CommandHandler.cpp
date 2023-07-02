@@ -40,13 +40,17 @@ void    CommandHandler::Call(Client* client, std::string packet) const
 
             client->setIsCommand();
             cmd->ExecCommand(client, args);
+            client->clearDataToSend();
             args.pop();
             return ;
         }
         else
         {
             // Handle unsupported command or message
-            client->setPacket(packet);
+            if (!client->getIsCommand())
+            {
+                client->setPacket(packet);
+            }
             client->hasDataToSend();
             client->clearCommand();
             client->setDataToSend();
