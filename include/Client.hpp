@@ -31,6 +31,7 @@ class Client
 		int				_socket;
 		std::string		_buffer;
 		bool			_dataToSend;
+		bool			_isCommand;
 
 	public:
 		Client();
@@ -45,12 +46,14 @@ class Client
 		// Getters
 		int			getSocket();
 		bool		getDataToSend();
-
+		bool		getIsCommand();
 
 		// Setters
 		void		setSocket(int fd);
 		void		setDataToSend();
+		void		setIsCommand();
 		void		clearDataToSend();
+		void		clearCommand();
 
 		// Exceptions
 		class MessageException : public std::exception {

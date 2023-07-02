@@ -7,8 +7,12 @@ bool	Server::handleData(int socket, Client* client)
 		// client->receiveMessage();
 		this->processPacket(client);
 
+		if (!client->hasDataToSend() && !client->getIsCommand())
+            client->setDataToSend();
+
 		return (true);
 	}
+	// this->removeClient(socket);
 	return (false);
 }
 

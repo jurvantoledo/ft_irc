@@ -77,7 +77,7 @@ void	Server::stayConnectedMan()
 					{
 						// Skip the current client
 						if (pfds.fd != this->_pollfds[j].fd && client->hasDataToSend())
-						{
+						{				
 							Client* targetClient = this->getClient(this->_pollfds[j].fd);
 							client->sendMessage(targetClient->getSocket());
 						}
