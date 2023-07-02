@@ -5,6 +5,7 @@
 #include "Client.hpp"
 #include "Command.hpp"
 #include <queue>
+#include <sstream>
 
 class Server;
 class Command;

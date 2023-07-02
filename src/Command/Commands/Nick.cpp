@@ -13,6 +13,7 @@ void    nickCMD::ExecCommand(Client* client, std::queue<std::string> args)
         std::cout << "nickname: " << nickname << " Already in use!" << std::endl;
         client->clearDataToSend(); // Clear any pending data to send
         client->setDataToSend(); // Set the data to send flag
+        client->clearCommand();
         return ;
     }
     

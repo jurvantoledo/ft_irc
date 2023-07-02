@@ -3,28 +3,19 @@
 
 bool	Client::hasDataToSend()
 {
-	if (this->_dataToSend)
-		return (true);
-	return (false);
+	return this->_dataToSend;
 }
 
-void Client::sendMessage(int socket)
+void Client::sendMessage(Client* client)
 {
-    std::size_t pos = this->_buffer.find("\r\n");
-
-    if (pos == std::string::npos) {
-        throw Client::MessageException("sendMessage(): Called without CRLF present in buffer");
-    }
-
-    std::string message = this->_buffer.substr(0, pos) + "\r\n";
-    ssize_t bytesRead = send(socket, message.c_str(), message.length(), 0);
+    std::string message = client->getPacket() + "\r\n";
+    ssize_t bytesRead = send(this->_socket, message.c_str(), message.length(), 0);
     if (bytesRead == -1) {
         throw std::runtime_error("Send() failed");
     }
 
-    std::cout << "[Server]: [" << this->getNickname() << "]" << " Sent message to client #" << socket << " " << message << std::endl;
-    
+    std::cout << "[Server]: [" << this->getNickname() << "]" << " Sent message to client #" << this->_socket << " " << message << std::endl;
+
     // Erase the sent message from the buffer
-    this->_buffer.erase(0, pos + 2);
     this->clearDataToSend();
 }

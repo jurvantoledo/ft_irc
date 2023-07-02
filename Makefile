@@ -30,7 +30,8 @@ SRC		= $(addprefix src/, $(addsuffix .cpp, \
 			Command \
 			CommandHandler \
 			$(addprefix Commands/, \
-			Nick))))
+			Nick \
+			User))))
 
 all: $(NAME)
 

@@ -4,12 +4,11 @@ bool	Server::handleData(int socket, Client* client)
 {
 	if (client->handleMessage())
 	{
-		// client->receiveMessage();
-		this->processPacket(client);
+		std::string message = client->receiveMessage();
+		this->processPacket(client, message);
 
-		if (!client->hasDataToSend() && !client->getIsCommand())
-            client->setDataToSend();
-
+        client->setDataToSend();
+	
 		return (true);
 	}
 	// this->removeClient(socket);
@@ -29,11 +28,11 @@ int	Server::newClientConnection(int sockfd)
 	return (0);
 }
 
-void	Server::processPacket(Client* client)
+void	Server::processPacket(Client* client, std::string& message)
 {
 	try
 	{
-		this->_commandHandlers->Call(client, client->receiveMessage());
+		this->_commandHandlers->Call(client, message);
 	}
 	catch(const std::exception& e)
 	{

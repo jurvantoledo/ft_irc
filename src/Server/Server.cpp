@@ -11,7 +11,24 @@ Server::~Server()
 	delete _commandHandlers;
 }
 
-std::string	Server::getPassword() { return this->_password; }
+bool	Server::checkPassword(std::string password) { return this->_password == password; }
+
+void Server::broadcastMessage(Client* sender) {
+	// // Setting data to send for each client
+	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
+		Client* client = it->second;
+		client->setDataToSend();
+	}
+
+	// Sending message to each client (excluding the sender)
+	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
+		Client* client = it->second;
+		if (client != sender && client->hasDataToSend()) {
+			client->sendMessage(sender);
+		}
+	}
+}
+
 
 void	Server::stayConnectedMan()
 {
@@ -63,6 +80,7 @@ void	Server::stayConnectedMan()
 		{
 			pollfd& pfds = this->_pollfds[i];
 			client = this->getClient(pfds.fd);
+			
 			if (pfds.revents & POLLIN)
 			{
 				if(!this->handleData(pfds.fd, client))
@@ -73,19 +91,11 @@ void	Server::stayConnectedMan()
 			{
 				if (client->hasDataToSend())
 				{
-					for (size_t j = 1; j < this->_pollfds.size(); j++)
-					{
-						// Skip the current client
-						if (pfds.fd != this->_pollfds[j].fd && client->hasDataToSend())
-						{				
-							Client* targetClient = this->getClient(this->_pollfds[j].fd);
-							client->sendMessage(targetClient->getSocket());
-						}
-					}
+					this->broadcastMessage(client);
 					this->removePollFlag(pfds, POLLOUT);
+					// Clear the flag once the data is sent
+					client->clearDataToSend();
 				}
-				// Clear the flag once the data is sent
-				client->clearDataToSend();
 			}
 			pfds.revents = 0;
 		}

@@ -20,12 +20,11 @@ bool	Client::handleMessage()
 		buffer[bytesRead] = '\0';
 		this->_buffer += buffer;
 	}
-	
-	bool	messageComplete = this->_buffer.find("\r\n") != std::string::npos;
+	bool messageComplete = this->_buffer.find("\r\n") != std::string::npos;
 
 	// Set the flag if a complete message is received
-	// if (messageComplete)
-	// 	this->setDataToSend();
+	if (messageComplete)
+		this->setDataToSend();
 	
 	return messageComplete;
 }
@@ -47,6 +46,7 @@ std::string Client::receiveMessage()
 	std::string packet = this->_buffer.substr(0, pos);
 
 	std::cout << "[Server]: fd #" << _socket << " Received message from client #" << packet << std::endl;
+    this->_buffer.erase(0, pos + 2);
 
     return packet;
 }

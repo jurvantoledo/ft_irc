@@ -1,10 +1,10 @@
 #include "../../include/Command.hpp"
 #include "../../include/CommandHandler.hpp"
-#include <sstream>
 
 CommandHandler::CommandHandler(Server& server): _server(server)
 {
     this->_commands["NICK"] = new nickCMD(this->_server);
+    this->_commands["USER"] = new userCMD(this->_server);
 }
 
 CommandHandler::~CommandHandler() {}
@@ -24,29 +24,33 @@ void    CommandHandler::Call(Client* client, std::string packet) const
 {
     try
     {
-        std::istringstream iss(packet);
+        std::stringstream ss(packet);
         std::string command;
-        iss >> command;
+        ss >> command;
 
         Command* cmd = this->getCommand(command);
         if (cmd)
         {
             std::queue<std::string> args;
             std::string arg;
-            while (iss >> arg)
+            while (ss >> arg)
             {
                 args.push(arg);
             }
 
             client->setIsCommand();
             cmd->ExecCommand(client, args);
+            args.pop();
+            return ;
         }
         else
         {
             // Handle unsupported command or message
+            client->setPacket(packet);
             client->hasDataToSend();
             client->clearCommand();
             client->setDataToSend();
+            return ;
         }
     }
     catch (const std::exception& e)

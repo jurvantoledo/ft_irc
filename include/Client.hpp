@@ -13,6 +13,7 @@ class Client
 		std::string	_username;
 		std::string	_realname;
 		std::string	_password;
+		bool		_already_exists;
 
 	public:
 		// Getters
@@ -20,16 +21,19 @@ class Client
 		std::string	getUsername() const;
 		std::string	getRealName() const;
 		std::string	getPassword() const;
+		bool		getAuthenticatedUser() const;
 
 		// Setters
 		void		setNickname(std::string nickname);
 		void		setUsername(std::string username);
 		void		setRealName(std::string realname);
 		void		setPassword(std::string password);
+		void		setAuthenticatedUser();
 
 	private:
 		int				_socket;
 		std::string		_buffer;
+		std::string		_packet;
 		bool			_dataToSend;
 		bool			_isCommand;
 
@@ -40,7 +44,8 @@ class Client
 
 		bool			handleMessage();
 		std::string		receiveMessage();
-		void			sendMessage(int socket);
+		std::string		getPacket();
+		void			sendMessage(Client* client);
 		bool			hasDataToSend();
 	
 		// Getters
@@ -50,6 +55,7 @@ class Client
 
 		// Setters
 		void		setSocket(int fd);
+		void		setPacket(std::string packet);
 		void		setDataToSend();
 		void		setIsCommand();
 		void		clearDataToSend();
