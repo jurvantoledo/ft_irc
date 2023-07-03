@@ -42,6 +42,7 @@ class Server
 		Channel*	getChannel(std::string channel);
 		void		removeChannel(std::string channel);
 
+		Client* 	getClientByName(std::string& nickname);
 		bool		checkPassword(std::string password);
 
 		class SocketFailure : public std::exception {
@@ -53,11 +54,11 @@ class Server
 		void	bindSocket(int sockfd);
 		int		newClientConnection(int sockfd);
 		int		getAcceptedMan(int sockfd);
-		bool	handleData(int socket, Client* client);
+		bool	handleData(Client* client);
 		void	setSocketOptions(int sockfd);
 
 		void	broadcastMessage(pollfd& pfds, Client* client);
-		void	processPacket(Client* client, std::string& message);
+		void	processPacket(Client* client);
 
 		Client*	AddClient(int fd);
 		Client*	getClient(int fd);

@@ -6,6 +6,7 @@ CommandHandler::CommandHandler(Server& server): _server(server)
     this->_commands["NICK"] = new nickCMD(this->_server);
     this->_commands["USER"] = new userCMD(this->_server);
     this->_commands["PASS"] = new passCMD(this->_server);
+    this->_commands["PRIVMSG"] = new privMsgCMD(this->_server);
 
 }
 
@@ -40,19 +41,12 @@ void    CommandHandler::Call(Client* client, std::string packet) const
                 args.push(arg);
             }
 
-            client->setIsCommand();
             cmd->ExecCommand(client, args);
-            client->clearDataToSend();
             args.pop();
             return ;
         }
         else
         {
-            // Handle unsupported command or message
-            client->setPacket(packet);
-            client->hasDataToSend();
-            client->clearCommand();
-            client->setDataToSend();
             return ;
         }
     }

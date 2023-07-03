@@ -11,10 +11,7 @@ void    passCMD::ExecCommand(Client* client, std::queue<std::string> args)
 	
 	if (client->getAuthenticatedUser())
 	{
-		std::cout << "[Client]: " << "[" << client->getNickname() << "]" << " already exists!" << std::endl;
-        client->clearDataToSend(); // Clear any pending data to send
-        client->setDataToSend(); // Set the data to send flag
-		return ;
+		return (void)client->queuePacket(ERR_ALREADYREGISTERED(client->getNickname()));
 	}
 	
 	client->setPassword(password);

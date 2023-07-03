@@ -1,16 +1,19 @@
 #include "../../include/Server.hpp"
 
-bool	Server::handleData(int socket, Client* client)
+bool	Server::handleData(Client* client)
 {
-	if (client->handleMessage())
+	try
 	{
-		std::string message = client->receiveMessage();
-		this->processPacket(client, message);
-
-		return (true);
+		if (!client->handleMessage())
+			return true;
+		this->processPacket(client);
 	}
-	// this->removeClient(socket);
-	return (false);
+	catch(const std::exception& e)
+	{
+		// this->handleDisconnect(client);
+		return false;
+	}
+	return true;
 }
 
 int	Server::newClientConnection(int sockfd)
@@ -26,11 +29,11 @@ int	Server::newClientConnection(int sockfd)
 	return (0);
 }
 
-void	Server::processPacket(Client* client, std::string& message)
+void	Server::processPacket(Client* client)
 {
 	try
 	{
-		this->_commandHandlers->Call(client, message);
+		this->_commandHandlers->Call(client, client->receiveMessage());
 	}
 	catch(const std::exception& e)
 	{

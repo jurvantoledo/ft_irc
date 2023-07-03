@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <queue>
 
 class Client
 {
@@ -36,6 +37,7 @@ class Client
 		std::string		_packet;
 		bool			_dataToSend;
 		bool			_isCommand;
+		std::queue<std::string>		_queue;
 
 	public:
 		Client();
@@ -51,18 +53,23 @@ class Client
 		int			getSocket();
 		void		setSocket(int fd);
 
-		bool		getDataToSend();
-		void		setDataToSend();
-		void		clearDataToSend();
+		// bool		getDataToSend();
+		// void		setDataToSend();
+		// void		clearDataToSend();
 
-		bool		getIsCommand();
-		void		setIsCommand();
-		void		clearCommand();
+		// bool		getIsCommand();
+		// void		setIsCommand();
+		// void		clearCommand();
 
 
-		std::string		getPacket();
-		void			setPacket(std::string packet);
-	
+		// std::string		getPacket();
+		// void			setPacket(std::string packet);
+
+		size_t			getQueueSize();
+		bool			processQueue();
+		bool			sendPacket();
+		void			queuePacket(std::string packet);
+
 		// Exceptions
 		class MessageException : public std::exception {
 			private:

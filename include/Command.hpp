@@ -5,6 +5,7 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Arguments.hpp"
+#include "Replies.hpp"
 #include <queue>
 
 class Channel;

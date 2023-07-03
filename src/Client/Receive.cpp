@@ -21,27 +21,12 @@ bool	Client::handleMessage()
 		this->_buffer += buffer;
 	}
 	bool messageComplete = this->_buffer.find("\r\n") != std::string::npos;
-
-	// Set the flag if a complete message is received
-	if (messageComplete && !this->_isCommand)
-		this->setDataToSend();
-	else
-	{
-		this->clearDataToSend();
-	}
 	
 	return messageComplete;
 }
 
 std::string Client::receiveMessage()
 {
-	// Check for IRC PING command
-    // if (this->_buffer.find("PING") != std::string::npos) {
-    //     // Respond to PING with PONG
-    //     std::string pingCommand = "PONG " + this->_buffer.substr(5) + "\r\n";
-    //     send(socket, pingCommand.c_str(), pingCommand.length(), 0);
-    //  }
-
 	size_t pos = this->_buffer.find("\r\n");
 	if (pos == std::string::npos)
 	{

@@ -9,22 +9,23 @@ Server::Server(int &port, std::string password) : _port(port), _password(passwor
 Server::~Server() 
 {
 	delete _commandHandlers;
+	close(this->_socket);
 }
 
 bool	Server::checkPassword(std::string password) { return this->_password == password; }
 
-void Server::broadcastMessage(pollfd& pfds, Client* client) {
-   	for (size_t j = 1; j < this->_pollfds.size(); j++)
-	{
-		// Skip the current client
-		if (pfds.fd != this->_pollfds[j].fd && client->hasDataToSend() && !client->getIsCommand())
-		{				
-			Client* targetClient = this->getClient(this->_pollfds[j].fd);
-			client->sendMessage(targetClient);
-			client->clearDataToSend();
-		}
-	}
-}
+// void Server::broadcastMessage(pollfd& pfds, Client* client) {
+//    	for (size_t j = 1; j < this->_pollfds.size(); j++)
+// 	{
+// 		// Skip the current client
+// 		if (pfds.fd != this->_pollfds[j].fd && client->hasDataToSend() && !client->getIsCommand())
+// 		{				
+// 			Client* targetClient = this->getClient(this->_pollfds[j].fd);
+// 			client->sendMessage(targetClient);
+// 			client->clearDataToSend();
+// 		}
+// 	}
+// }
 
 void	Server::stayConnectedMan()
 {
@@ -78,21 +79,14 @@ void	Server::stayConnectedMan()
 			
 			if (pfds.revents & POLLIN)
 			{
-				if(!this->handleData(pfds.fd, client))
+				if(!this->handleData(client))
 					this->removePollFlag(pfds, POLLIN);
 			}
 
 			if (pfds.revents & POLLOUT)
 			{
-				if (client->hasDataToSend())
-				{
-					this->broadcastMessage(pfds, client);
-					
+				if (client->processQueue())	// if queue gets processed, remove POLLOUT
 					this->removePollFlag(pfds, POLLOUT);
-
-					// Clear the flag once the data is sent
-					client->clearDataToSend();
-				}
 			}
 			pfds.revents = 0;
 		}
@@ -110,11 +104,9 @@ void	Server::stayConnectedMan()
 		while (it != this->_pollfds.end())
 		{
 			client = this->getClient(it->fd);
-			if (client->hasDataToSend())
+			if (client->getQueueSize())
 				this->setPollFlag(*it, POLLOUT);
-			it++;
+			++it;
 		}
-		
 	}
-	close(sockfd);
 }

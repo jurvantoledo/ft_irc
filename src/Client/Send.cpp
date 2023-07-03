@@ -1,21 +1,46 @@
 #include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
 
-bool	Client::hasDataToSend()
+size_t	Client::getQueueSize()
 {
-	return this->_dataToSend;
+	return this->_queue.size();
 }
 
-void Client::sendMessage(Client* client)
+bool	Client::processQueue()
 {
-    std::string message = this->getPacket() + "\r\n";
-    ssize_t bytesRead = send(client->_socket, message.c_str(), message.length(), 0);
-    if (bytesRead == -1) {
-        throw std::runtime_error("Send() failed");
-    }
+	while (this->_queue.size() && this->sendPacket()); // try to process all packets
+	return this->_queue.size() == 0;
+}
 
-    std::cout << "[Server]: [" << this->getNickname() << "]" << " Sent message to client #" << client->_socket << " " << message << std::endl;
+bool	Client::sendPacket()
+{
+	ssize_t			sent;
+	std::string&	packet = this->_queue.front();
 
-    // Erase the sent message from the buffer
-    this->clearDataToSend();
+	if (packet.size())
+	{
+		sent = send(this->_socket, packet.data(), packet.length(), 0);
+		if ((sent == -1 && errno == EAGAIN) || sent == 0)
+		{
+			errno = 0;
+			return false;
+		}
+		if (sent == -1)
+			throw MessageException("sendPacket() -> Send() failure and errno != EAGAIN");
+
+		packet.erase(0, sent);
+	}
+
+	if (packet.size())
+		return false;
+
+	this->_queue.pop();
+	return true;
+}
+
+void	Client::queuePacket(std::string packet)
+{
+    std::cout << "[Server]: [" << this->getNickname() << "]" << " Sent message to client #" << packet << std::endl;
+	std::string	complete = packet + "\r\n";
+	this->_queue.push(complete);
 }
