@@ -31,7 +31,14 @@ SRC		= $(addprefix src/, $(addsuffix .cpp, \
 			CommandHandler \
 			$(addprefix Commands/, \
 			Nick \
-			User))))
+			User \
+			Invite \
+			Join \
+			Kick \
+			Mode \
+			Pass \
+			PrivMsg \
+			Topic))))
 
 all: $(NAME)
 

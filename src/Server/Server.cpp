@@ -26,7 +26,6 @@ void Server::broadcastMessage(pollfd& pfds, Client* client) {
 	}
 }
 
-
 void	Server::stayConnectedMan()
 {
 	Client* client;

@@ -21,15 +21,14 @@ void    userCMD::ExecCommand(Client* client, std::queue<std::string> args)
         return ;
     }
     
-    // client->setPassword(password);
-    // std::cout << client->getPassword() << std::endl;
-    // if (this->_server.checkPassword(client->getPassword()))
-    // {
-    //     std::cout << "User: " << client->getUsername() << " with wrong password!" << std::endl;
-    //     client->clearDataToSend(); // Clear any pending data to send
-    //     client->setDataToSend(); // Set the data to send flag
-    //     return ;
-    // }
+    std::cout << client->getPassword() << std::endl;
+    if (!this->_server.checkPassword(client->getPassword()))
+    {
+        std::cout << "User: " << client->getUsername() << " with wrong password!" << std::endl;
+        client->clearDataToSend(); // Clear any pending data to send
+        client->setDataToSend(); // Set the data to send flag
+        return ;
+    }
     
     client->setUsername(username);
     client->setRealName(realname);

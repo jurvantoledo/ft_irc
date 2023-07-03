@@ -40,5 +40,69 @@ class userCMD: public Command
     void    ExecCommand(Client* client, std::queue<std::string> args);    
 };
 
+class passCMD: public Command
+{
+    public:
+        passCMD(Server& server);
+        ~passCMD();
+    
+    void    ExecCommand(Client* client, std::queue<std::string> args);    
+};
+
+class inviteCMD: public Command
+{
+    public:
+        inviteCMD(Server& server);
+        ~inviteCMD();
+    
+    void    ExecCommand(Client* client, std::queue<std::string> args);    
+};
+
+class joinCMD: public Command
+{
+    public:
+        joinCMD(Server& server);
+        ~joinCMD();
+    
+    void    ExecCommand(Client* client, std::queue<std::string> args);    
+};
+
+class kickCMD: public Command
+{
+    public:
+        kickCMD(Server& server);
+        ~kickCMD();
+    
+    void    ExecCommand(Client* client, std::queue<std::string> args);    
+};
+
+class privMsgCMD: public Command
+{
+    public:
+        privMsgCMD(Server& server);
+        ~privMsgCMD();
+    
+    void	toChannel(Client* client, std::string& target, std::queue<std::string> args);
+    void	toClient(Client* client, std::string& target, std::queue<std::string> args);
+    void    ExecCommand(Client* client, std::queue<std::string> args);    
+};
+
+class topicCMD: public Command
+{
+    public:
+        topicCMD(Server& server);
+        ~topicCMD();
+    
+    void    ExecCommand(Client* client, std::queue<std::string> args);    
+};
+
+class modeCMD: public Command
+{
+    public:
+        modeCMD(Server& server);
+        ~modeCMD();
+    
+    void    ExecCommand(Client* client, std::queue<std::string> args);    
+};
 
 #endif

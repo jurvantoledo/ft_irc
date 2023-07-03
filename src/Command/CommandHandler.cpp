@@ -5,6 +5,8 @@ CommandHandler::CommandHandler(Server& server): _server(server)
 {
     this->_commands["NICK"] = new nickCMD(this->_server);
     this->_commands["USER"] = new userCMD(this->_server);
+    this->_commands["PASS"] = new passCMD(this->_server);
+
 }
 
 CommandHandler::~CommandHandler() {}
