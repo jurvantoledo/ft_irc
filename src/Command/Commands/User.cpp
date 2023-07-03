@@ -10,8 +10,8 @@ void    userCMD::ExecCommand(Client* client, std::queue<std::string> args)
     args.pop();
     std::string realname = args.front();
     args.pop();
-    std::string password = args.front();
-    args.pop();
+    // std::string password = args.front();
+    // args.pop();
 
     if (client->getAuthenticatedUser())
     {
@@ -21,7 +21,7 @@ void    userCMD::ExecCommand(Client* client, std::queue<std::string> args)
         return ;
     }
     
-    client->setPassword(password);
+    // client->setPassword(password);
     // std::cout << client->getPassword() << std::endl;
     // if (this->_server.checkPassword(client->getPassword()))
     // {

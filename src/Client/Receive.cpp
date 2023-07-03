@@ -48,9 +48,9 @@ std::string Client::receiveMessage()
         throw std::runtime_error("Recv(): Called without CRLF present in buffer");
 	}
 	std::string packet = this->_buffer.substr(0, pos);
+    this->_buffer.erase(0, pos + 2);
 
 	std::cout << "[Server]: fd #" << _socket << " Received message from client #" << packet << std::endl;
-    this->_buffer.erase(0, pos + 2);
 
     return packet;
 }

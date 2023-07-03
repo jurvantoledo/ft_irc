@@ -47,10 +47,7 @@ void    CommandHandler::Call(Client* client, std::string packet) const
         else
         {
             // Handle unsupported command or message
-            if (!client->getIsCommand())
-            {
-                client->setPacket(packet);
-            }
+            client->setPacket(packet);
             client->hasDataToSend();
             client->clearCommand();
             client->setDataToSend();
