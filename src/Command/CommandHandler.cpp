@@ -7,6 +7,7 @@ CommandHandler::CommandHandler(Server& server): _server(server)
     this->_commands["USER"] = new userCMD(this->_server);
     this->_commands["PASS"] = new passCMD(this->_server);
     this->_commands["PRIVMSG"] = new privMsgCMD(this->_server);
+    this->_commands["JOIN"] = new joinCMD(this->_server);
 
 }
 

@@ -12,6 +12,7 @@
 
 // 4xx (error)
 #define ERR_UNKNOWNERROR(command)				"400 " + std::string(command) + ":Unknown error"
+#define ERR_WRONGCHANNAME(origin, target)		"401 " + origin + " " + target + " :No such origin/channel. Check if # is used for channel name"
 #define ERR_NOSUCHNICK(origin, target)			"401 " + origin + " " + target + " :No such origin/channel"
 #define ERR_CANNOTSENDTOCHAN(origin, channel)	"404 " + origin + " " + channel + " :You cannot sent messages to this channel"
 #define ERR_UNKNOWNCOMMAND(origin, command)		"421 " + origin + " " + command + " :Unknown command"
@@ -25,7 +26,7 @@
 #define ERR_CHANNELISFULL(origin, channel)		"471 " + origin + " " + channel + " :Cannot join channel (+l)"
 #define ERR_UNKNOWNMODE(origin, mode, channel)	"472 " + origin + " " + mode + " :is unknown mode char to me for " + channel
 #define ERR_INVITEONLY(origin, channel)			"473 " + origin + " " + channel + " :Cannot join channel (+i)"
-#define ERR_BADCHANNELKEY(origin, channel)		"475 " + origin + " #" + channel + " :Cannot join channel (+k)"
+#define ERR_WRONGCHANPASS(origin, channel)		"475 " + origin + " #" + channel + " :Cannot join channel (+k)"
 #define ERR_CHANOPRIVSNEEDED(origin, channel)	"482 " + origin + " " + channel + " :You are not a channel operator"
 
 

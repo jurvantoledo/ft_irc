@@ -23,7 +23,9 @@ SRC		= $(addprefix src/, $(addsuffix .cpp, \
 			Send \
 			User) \
 			$(addprefix Channel/, \
-			Channel) \
+			Channel \
+			Users \
+			Send) \
 			$(addprefix Arguments/, \
 			Arguments) \
 			$(addprefix Command/, \
