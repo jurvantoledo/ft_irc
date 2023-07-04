@@ -41,6 +41,6 @@ void	joinCMD::ExecCommand(Client* client, std::queue<std::string> args)
 
 	channel_ptr->sendMessage(RPL_JOIN(client->getNickname(), channel), client);
 	channel_ptr->addMember(client);
-	// if (new_channel)
-	// 	channel_ptr->addOperator(client);
+	if (new_channel)
+		channel_ptr->addOperator(client);
 }

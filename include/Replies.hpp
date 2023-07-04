@@ -6,6 +6,7 @@
 #define RPL_MODE(origin, channel, modes)		"324 " + origin + " " + channel + " " + modes
 #define RPL_PRIVMSG(origin, target, message)	":" + origin + " PRIVMSG " + target + " :" + message
 #define RPL_PART(origin, channel)				":" + origin + " PART :" + channel
+#define RPL_LEAVE(origin, channel)				":" + origin + " LEAVES :" + channel
 #define RPL_JOIN(origin, channel)				":" + origin + " JOIN :#" + channel
 #define RPL_TOPIC(origin, channel, topic)		":" + origin + " TOPIC " + channel + " :" + topic
 #define RPL_INVITE(origin, invited, channel)	":" + origin + " INVITE " + invited + " :" + channel

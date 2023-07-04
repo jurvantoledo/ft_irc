@@ -28,28 +28,25 @@ void    CommandHandler::Call(Client* client, std::string packet) const
 {
     try
     {
+        std::queue<std::string> args;
+        std::string arg;
+
         std::stringstream ss(packet);
         std::string command;
         ss >> command;
 
         Command* cmd = this->getCommand(command);
-        if (cmd)
+        if (!cmd)
         {
-            std::queue<std::string> args;
-            std::string arg;
-            while (ss >> arg)
-            {
-                args.push(arg);
-            }
+            return ;
+        }
+        while (ss >> arg)
+        {
+            args.push(arg);
+        }
 
-            cmd->ExecCommand(client, args);
-            args.pop();
-            return ;
-        }
-        else
-        {
-            return ;
-        }
+        cmd->ExecCommand(client, args);
+        args.pop();
     }
     catch (const std::exception& e)
     {

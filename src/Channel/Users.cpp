@@ -24,37 +24,84 @@ void	Channel::addMember(Client *client)
 
 void	Channel::removeMember(Client *client)
 {
+	std::vector<Client*>::iterator it;
 
+	if (this->isMember(client))
+	{
+		return ;
+	}
+	
+	this->sendMessage(RPL_LEAVE(client->getNickname(), this->_name), client);
+
+	for (it = this->_members.begin(); it != this->_members.end(); it++)
+	{
+		if (*it == client)
+			it = this->_members.erase(it);
+		else
+			it++;
+	}
 }
 
 void	Channel::addOperator(Client* client)
 {
-	return ;
+	if (!this->isMember(client) && !this->isOperator(client))
+		this->_operators.push_back(client);
 }
 
 bool	Channel::isOperator(Client* client)
 {
-	return false ;
+	std::vector<Client*>::iterator it;
+
+	for (it = this->_operators.begin(); it != this->_operators.end(); it++)
+	{
+		if (*it == client)
+			return true;
+	}
+	return false;
 }
 
 void	Channel::removeOperator(Client* client)
 {
-	return ;
+	std::vector<Client*>::iterator it;
+
+	for (it = this->_operators.begin(); it != this->_operators.end(); it++)
+	{
+		if (*it == client)
+			it = this->_operators.erase(it);
+		else
+			it++;
+	}
 }
 
 void	Channel::addInvited(Client* client)
 {
-	return ;
+	if (!this->isMember(client) && !this->isInvited(client))
+		this->_invited.push_back(client);
 }
 
 bool	Channel::isInvited(Client* client)
 {
-	return false ;
+	std::vector<Client*>::iterator it;
+
+	for (it = this->_invited.begin(); it != this->_invited.end(); it++)
+	{
+		if (*it == client)
+			return true;
+	}
+	return false;
 }
 
 void	Channel::removeInvited(Client* client)
 {
-	return ;
+	std::vector<Client*>::iterator it;
+
+	for (it = this->_invited.begin(); it != this->_invited.end(); it++)
+	{
+		if (*it == client)
+			it = this->_invited.erase(it);
+		else
+			it++;
+	}
 }
 
 size_t	Channel::channelSize() { return this->_members.size(); }

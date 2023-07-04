@@ -33,3 +33,4 @@ void	Channel::setTopic(std::string topic) 		{ this->_topic = topic; }
 void	Channel::setTopicOps(bool topic_ops)		{ this->_topic_ops = topic_ops; }
 void	Channel::setInviteOnly(bool invite_only)	{ this->_invite_only = invite_only; }
 void	Channel::setMaxUsers(size_t limit)			{ this->_max_users_channel = limit; }
+void	Channel::setPassword(std::string password)	{ this->_password = password; }
