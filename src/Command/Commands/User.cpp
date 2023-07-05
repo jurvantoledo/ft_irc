@@ -4,12 +4,10 @@ userCMD::userCMD(Server& server): Command(server) {}
 
 userCMD::~userCMD() {}
 
-void    userCMD::ExecCommand(Client* client, std::queue<std::string> args)
+void    userCMD::ExecCommand(Client* client, Arguments& args)
 {
-	std::string	username	= args.front();
-    args.pop();
-	std::string	realname	= args.front();
-    args.pop();
+	std::string	username	= args.removeArgument();
+	std::string	realname	= args.removeArgument();
 
 	if (client->getAuthenticatedUser())
 		return (void)client->queuePacket(ERR_ALREADYREGISTERED(client->getNickname()));

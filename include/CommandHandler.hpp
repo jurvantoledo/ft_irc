@@ -4,6 +4,8 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Command.hpp"
+#include "Replies.hpp"
+#include "Arguments.hpp"
 #include <queue>
 #include <sstream>
 
@@ -24,6 +26,18 @@ class CommandHandler
         ~CommandHandler();
 
         void    Call(Client* client, std::string packet) const;
+        void    registerUser(Client* client, std::string command, Arguments& args) const;
+
+        // std::string getRemainingArguments(std::queue<std::string> args);
+
+    	class MessageException : public std::exception {
+			private:
+				const char		*_reason;
+			public:
+				MessageException(const char *reason): _reason(reason) {}
+				const char *what() const throw() { return _reason; }
+		};
+
 };
 
 

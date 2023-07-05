@@ -14,7 +14,7 @@ class Client
 		std::string	_username;
 		std::string	_realname;
 		std::string	_password;
-		bool		_already_exists;
+		bool		_authenticated;
 
 	public:
 		// Getters

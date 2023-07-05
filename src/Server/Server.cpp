@@ -8,8 +8,18 @@ Server::Server(int &port, std::string password) : _port(port), _password(passwor
 
 Server::~Server() 
 {
+	std::map<std::string, Channel*>::iterator ch_it;
+	std::map<int, Client*>::iterator cl_it;
+
 	delete _commandHandlers;
 	close(this->_socket);
+
+	for (ch_it = this->_channels.begin(); ch_it != this->_channels.end(); ch_it++)
+		delete ch_it->second;
+	
+	for (cl_it = this->_clients.begin(); cl_it != this->_clients.end(); cl_it++)
+		delete cl_it->second;
+	
 }
 
 bool	Server::checkPassword(std::string password) { return this->_password == password; }

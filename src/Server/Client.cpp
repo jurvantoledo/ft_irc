@@ -15,6 +15,22 @@ Client*	Server::getClient(int fd)
 	return (this->_clients.at(fd));
 }
 
+void	Server::removeClient(int fd)
+{
+	std::map<int, Client*>::iterator it;
+
+	for (it = this->_clients.begin(); it != this->_clients.end(); it++)
+	{
+		if (it->first == fd)
+		{
+			delete it->second;
+			this->_clients.erase(it);
+		}
+		else
+			throw std::runtime_error("Cant delete the client because it does not exist");
+	}
+}
+
 Client*	Server::getClientByName(std::string& nickname)
 {
 	std::map<int, Client*>::iterator	it;

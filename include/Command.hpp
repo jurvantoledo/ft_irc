@@ -20,7 +20,7 @@ class Command
         explicit Command(Server& server);
         virtual ~Command();
 
-        virtual void    ExecCommand(Client* client, std::queue<std::string> args) = 0;
+        virtual void    ExecCommand(Client* client,  Arguments& args) = 0;
 };
 
 class nickCMD: public Command
@@ -29,7 +29,7 @@ class nickCMD: public Command
         nickCMD(Server& server);
         ~nickCMD();
 
-        void    ExecCommand(Client* client, std::queue<std::string> args);    
+        void    ExecCommand(Client* client, Arguments& args);    
 };
 
 class userCMD: public Command
@@ -38,7 +38,7 @@ class userCMD: public Command
         userCMD(Server& server);
         ~userCMD();
     
-    void    ExecCommand(Client* client, std::queue<std::string> args);    
+    void    ExecCommand(Client* client, Arguments& args);    
 };
 
 class passCMD: public Command
@@ -47,7 +47,7 @@ class passCMD: public Command
         passCMD(Server& server);
         ~passCMD();
     
-    void    ExecCommand(Client* client, std::queue<std::string> args);    
+    void    ExecCommand(Client* client, Arguments& args);    
 };
 
 class inviteCMD: public Command
@@ -56,7 +56,7 @@ class inviteCMD: public Command
         inviteCMD(Server& server);
         ~inviteCMD();
     
-    void    ExecCommand(Client* client, std::queue<std::string> args);    
+    void    ExecCommand(Client* client, Arguments& args);    
 };
 
 class joinCMD: public Command
@@ -65,7 +65,7 @@ class joinCMD: public Command
         joinCMD(Server& server);
         ~joinCMD();
     
-    void    ExecCommand(Client* client, std::queue<std::string> args);    
+    void    ExecCommand(Client* client, Arguments& args);    
 };
 
 class kickCMD: public Command
@@ -74,7 +74,7 @@ class kickCMD: public Command
         kickCMD(Server& server);
         ~kickCMD();
     
-    void    ExecCommand(Client* client, std::queue<std::string> args);    
+    void    ExecCommand(Client* client, Arguments& args);    
 };
 
 class privMsgCMD: public Command
@@ -83,9 +83,9 @@ class privMsgCMD: public Command
         privMsgCMD(Server& server);
         ~privMsgCMD();
     
-    void	toChannel(Client* client, std::string& target, std::queue<std::string> args);
-    void	toClient(Client* client, std::string& target, std::queue<std::string> args);
-    void    ExecCommand(Client* client, std::queue<std::string> args);    
+    void	toChannel(Client* client, std::string& target, Arguments& args);
+    void	toClient(Client* client, std::string& target, Arguments& args);
+    void    ExecCommand(Client* client, Arguments& args);    
 };
 
 class topicCMD: public Command
@@ -94,7 +94,7 @@ class topicCMD: public Command
         topicCMD(Server& server);
         ~topicCMD();
     
-    void    ExecCommand(Client* client, std::queue<std::string> args);    
+    void    ExecCommand(Client* client, Arguments& args);    
 };
 
 class modeCMD: public Command
@@ -103,7 +103,7 @@ class modeCMD: public Command
         modeCMD(Server& server);
         ~modeCMD();
     
-    void    ExecCommand(Client* client, std::queue<std::string> args);    
+    void    ExecCommand(Client* client, Arguments& args);    
 };
 
 #endif

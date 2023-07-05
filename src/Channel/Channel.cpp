@@ -1,12 +1,19 @@
 #include "../../include/Channel.hpp"
 
-Channel::Channel(std::string& channel, std::string& password)
-{
-	std::cout << "Channel constructed" << std::endl;
-}
+Channel::Channel(std::string& channel, std::string& password): 
+	_name(channel), 
+	_topic("No topic"), 
+	_password(password), 
+	_invite_only(false), 
+	_topic_ops(false), 
+	_max_users_channel(0) {}
 
 Channel::~Channel()
 {
+	std::vector<Client*>::iterator it;
+
+	for (it = this->_members.begin(); it != this->_members.end(); it++)
+		this->sendMessage(RPL_LEAVE((*it)->getNickname(), this->_name), NULL);
 }
 
 // Getters
@@ -34,3 +41,5 @@ void	Channel::setTopicOps(bool topic_ops)		{ this->_topic_ops = topic_ops; }
 void	Channel::setInviteOnly(bool invite_only)	{ this->_invite_only = invite_only; }
 void	Channel::setMaxUsers(size_t limit)			{ this->_max_users_channel = limit; }
 void	Channel::setPassword(std::string password)	{ this->_password = password; }
+
+size_t	Channel::channelSize() { return this->_members.size(); }

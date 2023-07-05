@@ -4,10 +4,9 @@ passCMD::passCMD(Server& server): Command(server) {}
 
 passCMD::~passCMD() {}
 
-void    passCMD::ExecCommand(Client* client, std::queue<std::string> args)
+void    passCMD::ExecCommand(Client* client, Arguments& args)
 {
-	std::string password = args.front();
-    args.pop();
+	std::string password = args.removeArgument();
 	
 	if (client->getAuthenticatedUser())
 	{

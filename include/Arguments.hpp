@@ -3,14 +3,21 @@
 
 #include <iostream>
 #include <string>
+#include <queue>
+#include <sstream>
 
 class Arguments
 {
     private:
-        std::string _packet;
+        std::queue<std::string>	_queue;
+
     public:
-        Arguments(/* args */);
+        Arguments(std::string& packet);
         ~Arguments();
+
+        std::string removeArgument();
+        std::string getRemainingArguments();
+        size_t      queueSize() const;
 };
 
 #endif

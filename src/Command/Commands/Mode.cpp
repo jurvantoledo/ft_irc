@@ -4,34 +4,23 @@ modeCMD::modeCMD(Server& server): Command(server) {}
 
 modeCMD::~modeCMD() {}
 
-void    modeCMD::ExecCommand(Client* client, std::queue<std::string> args)
+void    modeCMD::ExecCommand(Client* client, Arguments& args)
 {
-    std::string channel = args.front();
-    args.pop();
+    std::string channel = args.removeArgument();
     std::string modes;
     char        mode;
-
-    std::string::iterator   it;
     bool    add = true;
 
     Channel*    channel_ptr = this->_server.getChannel(channel);
 
     if (!channel_ptr)
-    {
-        return ;
-    }
-    
-    if (args.size() < 2)
-    {
-        return ;
-    }
+        return (void)client->queuePacket(ERR_WRONGCHANNAME(client->getNickname(), channel));
+    if (!args.queueSize())
+        return (void)client->queuePacket(RPL_MODE(client->getNickname(), channel, channel_ptr->getModes()));
     if (!channel_ptr->isOperator(client))
-    {
-        return ;
-    }
+        return (void)client->queuePacket(ERR_CHANOPRIVSNEEDED(client->getNickname(), channel));
     
-    modes = args.front();
-    args.pop();
+    modes = args.removeArgument();
 
     for (std::string::const_iterator it = modes.begin(); it != modes.end(); it++)
     {
@@ -59,16 +48,14 @@ void    modeCMD::ExecCommand(Client* client, std::queue<std::string> args)
         case 'k':
             if (add)
             {
-                channel_ptr->setPassword(args.front());
-                args.pop();
+                channel_ptr->setPassword(args.removeArgument());
             }
             else
                 channel_ptr->setPassword("");
             break ;
         case 'o':
         {
-            std::string nick = args.front();
-            args.pop();
+            std::string nick = args.removeArgument();
             Client* user = this->_server.getClientByName(nick);
 
             if (!user)
@@ -88,13 +75,13 @@ void    modeCMD::ExecCommand(Client* client, std::queue<std::string> args)
         case 'l':
             if (add)
             {
-                channel_ptr->setMaxUsers(atoi(args.front().c_str()));
-                args.pop();
+                channel_ptr->setMaxUsers(atoi(args.removeArgument().c_str()));
             }
             else
                 channel_ptr->setMaxUsers(0);
             break ;
         default:
+            
             break;
         }
     }

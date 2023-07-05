@@ -4,20 +4,14 @@
 Client::Client(): _socket(-1),
 				_nickname("UNKNOWN"), 
 				_dataToSend(false),
-				_already_exists(false)
-{
-	std::cout << "Client constructor for Client with fd: # " << _socket << std::endl;
-}
+				_authenticated(false) {}
 
 Client::Client(int client_fd): 
 				_socket(client_fd), 
 				_nickname("UNKNOWN"), \
 				_dataToSend(false), 
 				_isCommand(false), 
-				_already_exists(false)
-{
-	std::cout << "Client constructor for Client with fd: # " << _socket << std::endl;
-}
+				_authenticated(false) {}
 
 Client::~Client() 
 {

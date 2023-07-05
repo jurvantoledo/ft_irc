@@ -4,27 +4,22 @@ topicCMD::topicCMD(Server& server): Command(server) {}
 
 topicCMD::~topicCMD() {}
 
-void    topicCMD::ExecCommand(Client* client, std::queue<std::string> args)
+void    topicCMD::ExecCommand(Client* client, Arguments& args)
 {
-    std::string channel = args.front();
-    args.pop();
+    std::string channelName = args.removeArgument();
     std::string topic;
 
-    Channel* channel_ptr = this->_server.getChannel(channel);
+    Channel* channel = this->_server.getChannel(channelName);
 
-    if (!channel_ptr)
-    {
-        return ;
-    }
-    if (args.size() < 2)
-    {
-        return ;
-    }
+    if (!channel)
+        return (void)client->queuePacket(ERR_WRONGCHANNAME(client->getNickname(), channelName));
+    if (!args.queueSize())
+        return (void)client->queuePacket(RPL_TOPIC(client->getNickname(), channelName, channel->getTopic()));
     
-    topic = args.front();
-    if (!channel_ptr->isOperator(client) && channel_ptr->getTopicOps())
-        return ;
+    topic = args.removeArgument();
+    if (!channel->isOperator(client) && channel->getTopicOps())
+        return (void)client->queuePacket(ERR_CHANOPRIVSNEEDED(client->getNickname(), channelName));
 
-    channel_ptr->setTopic(topic);
-    channel_ptr->sendMessage(RPL_TOPIC(client->getNickname(), channel, topic), client);
+    channel->setTopic(topic);
+    channel->sendMessage(RPL_TOPIC(client->getNickname(), channelName, topic), client);
 }

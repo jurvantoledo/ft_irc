@@ -4,10 +4,9 @@ nickCMD::nickCMD(Server& server) : Command(server) {}
 
 nickCMD::~nickCMD() {}
 
-void    nickCMD::ExecCommand(Client* client, std::queue<std::string> args)
+void    nickCMD::ExecCommand(Client* client, Arguments& args)
 {
-    std::string	nick = args.front();
-    args.pop();
+    std::string	nick = args.removeArgument();
 
 	if (this->_server.getClientByName(nick))
 		return (void)client->queuePacket(ERR_NICKNAMEINUSE(client->getNickname()));

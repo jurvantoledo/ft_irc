@@ -4,24 +4,22 @@ kickCMD::kickCMD(Server& server): Command(server) {}
 
 kickCMD::~kickCMD() {}
 
-void    kickCMD::ExecCommand(Client* client, std::queue<std::string> args)
+void    kickCMD::ExecCommand(Client* client, Arguments& args)
 {
-    std::string user = args.front();
-    args.pop();
-    std::string channel = args.front();
-    args.pop();
+    std::string user = args.removeArgument();
+    std::string channelName = args.removeArgument();
 
-    Channel* channel_ptr = this->_server.getChannel(channel);
+    Channel* channel = this->_server.getChannel(channelName);
     Client* user_ptr = this->_server.getClientByName(user);
 
-    if (!channel_ptr)
+    if (!channel)
         return ;
     if (!user_ptr)
         return ;
-    if (!channel_ptr->isOperator(client))
+    if (!channel->isOperator(client))
         return ;
-    if (!channel_ptr->isMember(user_ptr))
-		return (void)client->queuePacket(ERR_NOSUCHNICK(client->getNickname(), channel));
+    if (!channel->isMember(user_ptr))
+		return (void)client->queuePacket(ERR_NOSUCHNICK(client->getNickname(), channelName));
     
-    channel_ptr->removeMember(user_ptr);
+    channel->removeMember(user_ptr);
 }

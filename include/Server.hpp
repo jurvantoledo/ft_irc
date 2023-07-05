@@ -62,7 +62,7 @@ class Server
 
 		Client*	AddClient(int fd);
 		Client*	getClient(int fd);
-		Client*	removeClient(int fd);
+		void	removeClient(int fd);
 
 		void	addToPoll(int fd);
 		void	setPollFlag(pollfd &pfd, short events);
