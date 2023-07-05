@@ -86,6 +86,13 @@ void	Server::stayConnectedMan()
 		{
 			pollfd& pfds = this->_pollfds[i];
 			client = this->getClient(pfds.fd);
+
+			if (pfds.revents & POLLHUP)
+			{
+				this->getDisconnectedMan(client);
+				this->removePollFlag(pfds, POLLIN);
+			}
+			
 			
 			if (pfds.revents & POLLIN)
 			{

@@ -40,3 +40,15 @@ void	Server::processPacket(Client* client)
 		std::cerr << e.what() << '\n';
 	}
 }
+
+void	Server::getDisconnectedMan(Client *client)
+{
+	std::map<std::string, Channel*>::iterator it;
+
+	for (it = this->_channels.begin(); it != this->_channels.end(); it++)
+		it->second->removeMember(client);
+	
+	this->removeClient(client->getSocket());
+
+	std::cout << "[Server]: client fd #" << client->getSocket() << " disconnected" << std::endl;
+}

@@ -67,6 +67,7 @@ class Server
 		void	addToPoll(int fd);
 		void	setPollFlag(pollfd &pfd, short events);
 		void	removePollFlag(pollfd &pfd, short events);
+		void	getDisconnectedMan(Client* client);
 };
 
 #endif
