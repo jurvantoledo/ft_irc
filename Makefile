@@ -21,7 +21,8 @@ SRC		= $(addprefix src/, $(addsuffix .cpp, \
 			Client \
 			Receive \
 			Send \
-			User) \
+			User \
+			Arguments) \
 			$(addprefix Channel/, \
 			Channel \
 			Send \

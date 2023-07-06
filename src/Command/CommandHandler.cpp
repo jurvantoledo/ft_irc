@@ -33,54 +33,33 @@ Command*    CommandHandler::getCommand(std::string& command) const
     return NULL;
 }
 
-// std::string    CommandHandler::getRemainingArguments(std::queue<std::string> args)
-// {
-//     std::string full;
-
-//     while (args.size())
-//     {
-//         full += " " + args.front();
-//     }
-    
-//     return full;
-// }
-
-void    CommandHandler::registerUser(Client* client, std::string command, Arguments& args) const
+bool    CommandHandler::registerUser(Client* client, std::string command) const
 {
-    
-    if (command == "USER" || command == "PASS")
+    if (client->getNickname().empty() || client->getUsername().empty() || client->getPassword().empty())
     {
-        Command* cmd = this->getCommand(command);
-        if (cmd)
-        {
-            cmd->ExecCommand(client, args);
-        }
-        else
-         {
-            throw MessageException(command.c_str());
-        }
+        if (command == "USER" || command == "PASS" || command == "NICK")
+            return true;
     }
-    return (void)client->queuePacket(ERR_NOTREGISTERED(client->getNickname()));
+    
+    return false;
 }
 
 void    CommandHandler::Call(Client* client, std::string packet) const
 {
-    Arguments args(packet);
+    client->getArguments(packet);
     std::string command;
 
     try
     {
-        command = args.removeArgument();
-
-        if (!client->getAuthenticatedUser())
-        {
-            this->registerUser(client, command, args);
-            return ;
-        }
+        command = client->removeArgument();
         
         Command* cmd = this->getCommand(command);
+
+        if(!this->registerUser(client, command) && !client->getAuthenticatedUser())
+            return (void)client->queuePacket(ERR_NOTREGISTERED(client->getNickname()));
+        
         if (cmd)
-            cmd->ExecCommand(client, args);
+            cmd->ExecCommand(client);
         else
         {
             throw MessageException(command.c_str());

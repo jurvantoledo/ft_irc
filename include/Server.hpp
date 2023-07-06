@@ -52,7 +52,7 @@ class Server
 	private:
 		int		createSocket();
 		void	bindSocket(int sockfd);
-		int		newClientConnection(int sockfd);
+		void	newClientConnection(int sockfd);
 		int		getAcceptedMan(int sockfd);
 		bool	handleData(Client* client);
 		void	setSocketOptions(int sockfd);

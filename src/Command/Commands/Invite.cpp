@@ -4,10 +4,10 @@ inviteCMD::inviteCMD(Server& server): Command(server) {}
 
 inviteCMD::~inviteCMD() {}
 
-void    inviteCMD::ExecCommand(Client* client, Arguments& args)
+void    inviteCMD::ExecCommand(Client* client)
 {
-    std::string user = args.removeArgument();
-    std::string channel = args.removeArgument();
+    std::string user = client->removeArgument();
+    std::string channel = client->removeArgument();
 
     Client* user_ptr = this->_server.getClientByName(user);
     Channel* channel_ptr = this->_server.getChannel(channel);

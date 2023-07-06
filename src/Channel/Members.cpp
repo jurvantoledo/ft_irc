@@ -15,7 +15,7 @@ bool	Channel::isMember(Client* client)
 
 void	Channel::addMember(Client *client)
 {
-	if (this->isMember(client))
+	if (!this->isMember(client))
 		return ;
 	this->_members.push_back(client);
 	client->queuePacket(RPL_JOIN(client->getNickname(), this->_name));
@@ -27,10 +27,8 @@ void	Channel::removeMember(Client *client)
 {
 	std::vector<Client*>::iterator it;
 
-	if (this->isMember(client))
-	{
+	if (!this->isMember(client))
 		return ;
-	}
 	
 	this->sendMessage(RPL_LEAVE(client->getNickname(), this->_name), client);
 

@@ -4,9 +4,9 @@ passCMD::passCMD(Server& server): Command(server) {}
 
 passCMD::~passCMD() {}
 
-void    passCMD::ExecCommand(Client* client, Arguments& args)
+void    passCMD::ExecCommand(Client* client)
 {
-	std::string password = args.removeArgument();
+	std::string password = client->removeArgument();
 	
 	if (client->getAuthenticatedUser())
 	{

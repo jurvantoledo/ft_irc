@@ -8,8 +8,8 @@ void	Server::addToPoll(int fd)
 	client_poll.events = POLLIN | POLLHUP;
 	this->_pollfds.push_back(client_poll);
 	
-	this->_clients.insert(std::pair<int, Client *>(client_poll.fd, this->AddClient(fd)));
-	std::cout << "[Server]: added the client # " << fd << std::endl;
+	this->_clients.insert(std::pair<int, Client *>(fd, this->AddClient(fd)));
+	std::cout << "[Server]: added the client #" << fd << std::endl;
 }
 
 void	Server::setPollFlag(pollfd &pfd, short events)

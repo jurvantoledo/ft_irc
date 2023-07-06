@@ -6,6 +6,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <queue>
+#include <string.h>
+#include <sstream>
 
 class Client
 {
@@ -38,6 +40,7 @@ class Client
 		bool			_dataToSend;
 		bool			_isCommand;
 		std::queue<std::string>		_queue;
+		std::queue<std::string>		_args;
 
 	public:
 		Client();
@@ -69,6 +72,13 @@ class Client
 		bool			processQueue();
 		bool			sendPacket();
 		void			queuePacket(std::string packet);
+
+		void			getArguments(std::string& packet);
+		std::string		removeArgument();
+		std::string 	getRemainingArguments();
+		size_t 			queueSize() const;
+
+
 
 		// Exceptions
 		class MessageException : public std::exception {

@@ -4,20 +4,18 @@ joinCMD::joinCMD(Server& server): Command(server) {}
 
 joinCMD::~joinCMD() {}
 
-void	joinCMD::ExecCommand(Client* client, Arguments& args)
+void	joinCMD::ExecCommand(Client* client)
 {
 	Channel* channel;
-	std::string	channelName = args.removeArgument();
+	std::string	channelName = client->removeArgument();
 	std::string	password;
 	bool	new_channel;
 
 	if ((char)channelName[0] != '#')
 		return (void)client->queuePacket(ERR_WRONGCHANNAME(client->getNickname(), channelName));
 	
-	if (args.queueSize())
-	{
-		password = args.removeArgument();
-	}
+	if (client->queueSize() != 0)
+		password = client->removeArgument();
 
 	channel = this->_server.getChannel(channelName);
 	new_channel = !channel;
@@ -27,8 +25,8 @@ void	joinCMD::ExecCommand(Client* client, Arguments& args)
 	if (channel->getMaxUsers() && channel->getMaxUsers() >= channel->channelSize())
 		return (void)client->queuePacket(ERR_CHANNELISFULL(client->getNickname(), channelName));
 	
-	// if (!channel->checkPassword(password))
-	// 	return (void)client->queuePacket(ERR_WRONGCHANPASS(client->getNickname(), channelName));
+	if (channel->checkPassword(password))
+		return (void)client->queuePacket(ERR_WRONGCHANPASS(client->getNickname(), channelName));
 	
 	if (channel->isMember(client))
 		return (void)client->queuePacket(RPL_JOIN(client->getNickname(), channelName));

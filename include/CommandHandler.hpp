@@ -5,7 +5,6 @@
 #include "Client.hpp"
 #include "Command.hpp"
 #include "Replies.hpp"
-#include "Arguments.hpp"
 #include <queue>
 #include <sstream>
 
@@ -26,7 +25,7 @@ class CommandHandler
         ~CommandHandler();
 
         void    Call(Client* client, std::string packet) const;
-        void    registerUser(Client* client, std::string command, Arguments& args) const;
+        bool    registerUser(Client* client, std::string command) const;
 
         // std::string getRemainingArguments(std::queue<std::string> args);
 

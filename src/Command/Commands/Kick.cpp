@@ -4,10 +4,10 @@ kickCMD::kickCMD(Server& server): Command(server) {}
 
 kickCMD::~kickCMD() {}
 
-void    kickCMD::ExecCommand(Client* client, Arguments& args)
+void    kickCMD::ExecCommand(Client* client)
 {
-    std::string user = args.removeArgument();
-    std::string channelName = args.removeArgument();
+    std::string user = client->removeArgument();
+    std::string channelName = client->removeArgument();
 
     Channel* channel = this->_server.getChannel(channelName);
     Client* user_ptr = this->_server.getClientByName(user);

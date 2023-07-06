@@ -8,7 +8,7 @@ Client::Client(): _socket(-1),
 
 Client::Client(int client_fd): 
 				_socket(client_fd), 
-				_nickname("UNKNOWN"), \
+				_nickname(), \
 				_dataToSend(false), 
 				_isCommand(false), 
 				_authenticated(false) {}

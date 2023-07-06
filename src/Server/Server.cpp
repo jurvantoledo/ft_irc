@@ -1,10 +1,8 @@
 #include "../../include/Server.hpp"
 
 Server::Server(int &port, std::string password) : _port(port), _password(password), \
-				_onlineClients(0), _pollfds(), _clients(), _commandHandlers(new CommandHandler(*this))
-{
-	std::cout << "Server constructor is called\n" << std::endl;
-}
+				_onlineClients(0), _pollfds(), _clients(), _commandHandlers(new CommandHandler(*this)) 
+				{}
 
 Server::~Server() 
 {
@@ -66,7 +64,7 @@ void	Server::stayConnectedMan()
 	this->_pollfds.push_back(server_poll);
 	while (1)
 	{
-		if (poll(&this->_pollfds[0], this->_pollfds.size(), -1) == -1)
+		if (poll(this->_pollfds.data(), this->_pollfds.size(), -1) == -1)
 		{
 			std::cout << "Poll() failed" << std::endl;
 			return ;
@@ -75,11 +73,7 @@ void	Server::stayConnectedMan()
 		if (this->_pollfds[0].revents & POLLIN)
 		{
 			this->_pollfds[0].revents = 0;
-			if (newClientConnection(sockfd) != 0)
-			{
-				close(sockfd);
-				continue ;
-			}
+			this->newClientConnection(sockfd);
 		}
 
 		for (size_t i = 1; i < this->_pollfds.size(); i++)
@@ -90,19 +84,21 @@ void	Server::stayConnectedMan()
 			if (pfds.revents & POLLHUP)
 			{
 				this->getDisconnectedMan(client);
-				this->removePollFlag(pfds, POLLIN);
+				this->removePollFlag(pfds, 0xFFFF);
+				continue ;
 			}
 			
-			
+			// ready for getting incoming data
 			if (pfds.revents & POLLIN)
 			{
 				if(!this->handleData(client))
-					this->removePollFlag(pfds, POLLIN);
+					this->removePollFlag(pfds, POLLIN); // If incoming data fails delete pfd
 			}
 
+			// ready for sending outgoing data
 			if (pfds.revents & POLLOUT)
 			{
-				if (client->processQueue())	// if queue gets processed, remove POLLOUT
+				if (client->processQueue())	// if queue is processed, remove POLLOUT
 					this->removePollFlag(pfds, POLLOUT);
 			}
 			pfds.revents = 0;
