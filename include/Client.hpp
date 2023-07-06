@@ -51,7 +51,7 @@ class Client
 		std::string		receiveMessage();
 		void			sendMessage(Client* client);
 
-		bool			hasDataToSend();
+		// bool			hasDataToSend();
 	
 		int			getSocket();
 		void		setSocket(int fd);

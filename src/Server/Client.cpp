@@ -2,7 +2,7 @@
 
 Client*	Server::AddClient(int fd)
 {
-	Client *new_client;
+	Client* new_client;
 
 	new_client = new Client(fd);
     new_client->setSocket(fd);

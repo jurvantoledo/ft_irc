@@ -7,6 +7,8 @@ userCMD::~userCMD() {}
 void    userCMD::ExecCommand(Client* client)
 {
 	std::string	username	= client->removeArgument();
+	std::string	mode		= client->removeArgument();
+	std::string	_			= client->removeArgument();
 	std::string	realname	= client->removeArgument();
 
 	if (client->getAuthenticatedUser())

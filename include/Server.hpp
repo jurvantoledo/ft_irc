@@ -53,6 +53,7 @@ class Server
 		int		createSocket();
 		void	bindSocket(int sockfd);
 		void	newClientConnection(int sockfd);
+		void	getDisconnectedMan(Client *client);
 		int		getAcceptedMan(int sockfd);
 		bool	handleData(Client* client);
 		void	setSocketOptions(int sockfd);
@@ -67,7 +68,6 @@ class Server
 		void	addToPoll(int fd);
 		void	setPollFlag(pollfd &pfd, short events);
 		void	removePollFlag(pollfd &pfd, short events);
-		void	getDisconnectedMan(Client* client);
 };
 
 #endif

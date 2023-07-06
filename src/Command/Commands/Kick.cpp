@@ -13,13 +13,13 @@ void    kickCMD::ExecCommand(Client* client)
     Client* user_ptr = this->_server.getClientByName(user);
 
     if (!channel)
-        return ;
+		  return (void)client->queuePacket(ERR_WRONGCHANNAME(client->getNickname(), channelName));
     if (!user_ptr)
-        return ;
+		  return (void)client->queuePacket(ERR_NOSUCHNICK(client->getNickname(), channelName));
     if (!channel->isOperator(client))
-        return ;
+		  return (void)client->queuePacket(ERR_CHANOPRIVSNEEDED(client->getNickname(), channelName));
     if (!channel->isMember(user_ptr))
-		return (void)client->queuePacket(ERR_NOSUCHNICK(client->getNickname(), channelName));
+		  return (void)client->queuePacket(ERR_NOSUCHNICK(client->getNickname(), channelName));
     
     channel->removeMember(user_ptr);
 }

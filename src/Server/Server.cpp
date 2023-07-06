@@ -1,8 +1,12 @@
 #include "../../include/Server.hpp"
 
-Server::Server(int &port, std::string password): _socket(-1), _port(port), _password(password), \
-				_onlineClients(0), _pollfds(), _clients(), _commandHandlers(new CommandHandler(*this)) 
-				{}
+Server::Server(int &port, std::string password): 
+										_socket(-1),
+										_port(port), 
+										_password(password), \
+										_pollfds(), 
+										_clients(), 
+										_commandHandlers(new CommandHandler(*this)) {}
 
 Server::~Server() 
 {
@@ -64,7 +68,7 @@ void	Server::stayConnectedMan()
 	this->_pollfds.push_back(server_poll);
 	while (1)
 	{
-		if (poll(this->_pollfds.data(), this->_pollfds.size(), -1) == -1)
+		if (poll(&this->_pollfds[0], this->_pollfds.size(), -1) == -1)
 		{
 			std::cout << "Poll() failed" << std::endl;
 			return ;
@@ -88,17 +92,15 @@ void	Server::stayConnectedMan()
 				continue ;
 			}
 			
-			// ready for getting incoming data
 			if (pfds.revents & POLLIN)
 			{
 				if(!this->handleData(client))
-					this->removePollFlag(pfds, POLLIN); // If incoming data fails delete pfd
+					this->removePollFlag(pfds, POLLIN);
 			}
 
-			// ready for sending outgoing data
 			if (pfds.revents & POLLOUT)
 			{
-				if (client->processQueue())	// if queue is processed, remove POLLOUT
+				if (client->processQueue())	// if queue gets processed, remove POLLOUT
 					this->removePollFlag(pfds, POLLOUT);
 			}
 			pfds.revents = 0;

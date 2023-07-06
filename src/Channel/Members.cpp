@@ -15,8 +15,10 @@ bool	Channel::isMember(Client* client)
 
 void	Channel::addMember(Client *client)
 {
-	if (!this->isMember(client))
-		return ;
+	if (this->isInvited(client))
+		this->removeInvited(client);
+	if (this->isMember(client))
+		return;
 	this->_members.push_back(client);
 	client->queuePacket(RPL_JOIN(client->getNickname(), this->_name));
 	client->queuePacket(RPL_MODE(client->getNickname(), this->_name, this->getModes()));

@@ -2,13 +2,13 @@
 #include "../../include/Server.hpp"
 
 Client::Client(): _socket(-1),
-				_nickname("UNKNOWN"), 
+				_nickname(), 
 				_dataToSend(false),
 				_authenticated(false) {}
 
 Client::Client(int client_fd): 
 				_socket(client_fd), 
-				_nickname("UNKNOWN"), \
+				_nickname(), \
 				_dataToSend(false), 
 				_isCommand(false), 
 				_authenticated(false) {}

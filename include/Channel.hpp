@@ -40,7 +40,7 @@ class Channel
 
 		std::string	getModes();
 
-		void	sendMessage(std::string message, Client* client);
+		void	sendMessage(std::string message, Client* client = NULL);
 
 		bool	isMember(Client *client);
 		bool	isOperator(Client *client);
