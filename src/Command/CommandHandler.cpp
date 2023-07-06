@@ -58,12 +58,8 @@ void    CommandHandler::Call(Client* client, std::string packet) const
         if(!this->registerUser(client, command) && !client->getAuthenticatedUser())
             return (void)client->queuePacket(ERR_NOTREGISTERED(client->getNickname()));
         
-        if (cmd)
-            cmd->ExecCommand(client);
-        else
-        {
-            throw MessageException(command.c_str());
-        }
+        try									{ cmd->ExecCommand(client); }
+		catch (const std::out_of_range& e)	{ client->queuePacket(ERR_NEEDMOREPARAMS(client->getNickname(), command)); }
     }
     catch (const std::exception& e)
     {

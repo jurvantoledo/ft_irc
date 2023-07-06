@@ -2,8 +2,8 @@
 
 Channel::Channel(std::string& channel, std::string& password): 
 	_name(channel), 
-	_topic("No topic"), 
-	_password(password), 
+	_topic("Topic not set"), 
+	_password(), 
 	_invite_only(false), 
 	_topic_ops(false), 
 	_max_users_channel(0) {}

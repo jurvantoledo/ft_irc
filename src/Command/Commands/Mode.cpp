@@ -22,7 +22,7 @@ void    modeCMD::ExecCommand(Client* client)
     
     modes = client->removeArgument();
 
-    for (std::string::const_iterator it = modes.begin(); it != modes.end(); it++)
+    for (std::string::iterator it = modes.begin(); it != modes.end(); it++)
     {
         mode = *((it)++);
         // if (mode == '+')

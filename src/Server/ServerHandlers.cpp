@@ -51,10 +51,7 @@ void	Server::processPacket(Client* client)
 {
 	try
 	{
-		this->_commandHandlers->Call(client, client->receiveMessage());
+		while (true) this->_commandHandlers->Call(client, client->receiveMessage());
 	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-	}
+	catch(const std::exception& e) {}
 }

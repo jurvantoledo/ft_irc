@@ -6,15 +6,15 @@ joinCMD::~joinCMD() {}
 
 void	joinCMD::ExecCommand(Client* client)
 {
-	Channel* channel;
 	std::string	channelName = client->removeArgument();
 	std::string	password;
+	Channel* channel;
 	bool	new_channel;
 
 	if ((char)channelName[0] != '#')
 		return (void)client->queuePacket(ERR_WRONGCHANNAME(client->getNickname(), channelName));
 	
-	if (client->queueSize() != 0)
+	if (client->queueSize() > 1)
 		password = client->removeArgument();
 
 	channel = this->_server.getChannel(channelName);
@@ -25,7 +25,7 @@ void	joinCMD::ExecCommand(Client* client)
 	if (channel->getMaxUsers() && channel->getMaxUsers() >= channel->channelSize())
 		return (void)client->queuePacket(ERR_CHANNELISFULL(client->getNickname(), channelName));
 	
-	if (channel->checkPassword(password))
+	if (!channel->checkPassword(password))
 		return (void)client->queuePacket(ERR_WRONGCHANPASS(client->getNickname(), channelName));
 	
 	if (channel->isMember(client))
