@@ -29,8 +29,6 @@ SRC		= $(addprefix src/, $(addsuffix .cpp, \
 			Members \
 			Operators \
 			Invited) \
-			$(addprefix Arguments/, \
-			Arguments) \
 			$(addprefix Command/, \
 			Command \
 			CommandHandler \
@@ -55,7 +53,6 @@ objs/%.o: src/%.cpp
 	@$(MKDIR) objs/Server
 	@$(MKDIR) objs/Client
 	@$(MKDIR) objs/Channel
-	@$(MKDIR) objs/Arguments
 	@$(MKDIR) objs/Command
 	@$(MKDIR) objs/Command/Commands
 	$(CC) $(CFLAGS) -o $@ -c $< $(HEADERS)

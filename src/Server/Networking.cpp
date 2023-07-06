@@ -63,6 +63,12 @@ void	Server::bindSocket(int sockfd)
 	}
 }
 
+void	Server::setFcntl(int socket)
+{
+	if (fcntl(socket, F_SETFL, O_NONBLOCK) == -1)
+		throw std::runtime_error("fcntl() failed");
+}	
+
 int		Server::getAcceptedMan(int sockfd)
 {
 	sockaddr_in clientAddress;
@@ -71,14 +77,18 @@ int		Server::getAcceptedMan(int sockfd)
 	int new_sockfd = accept(sockfd, (struct sockaddr*)&clientAddress, &clientAddresslen);
 	if (new_sockfd < 0)
 	{
-		close(sockfd);
-		close(new_sockfd);
 		throw SocketFailure();
 	}
-	if (fcntl(sockfd, F_SETFL, O_NONBLOCK) == -1)
-	{
-		throw std::runtime_error("fcntl() failed");
-	}
-	
 	return new_sockfd;
+}
+
+void	Server::setListen(int socket)
+{
+	if (listen(socket, 1) < 0)
+	{
+		close(socket);
+		std::cerr << "Listen() failed" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	std::cout << "Server listening on port: " << _port << std::endl;
 }

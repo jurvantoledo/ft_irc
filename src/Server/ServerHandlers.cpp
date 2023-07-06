@@ -2,15 +2,14 @@
 
 void	Server::newClientConnection(int sockfd)
 {
-	try
+	int	client_fd = getAcceptedMan(sockfd);
+
+	if (client_fd == -1)
 	{
-		int	client_fd = getAcceptedMan(sockfd);
-        this->addToPoll(client_fd);
-	}
-	catch(const std::exception& e)
-	{
+		std::cout << "Accept() function failed" << std::endl;
 		return ;
 	}
+	this->addToPoll(client_fd);
 }
 
 void	Server::getDisconnectedMan(Client *client)
@@ -48,7 +47,5 @@ void	Server::processPacket(Client* client)
 		this->_commandHandlers->Call(client, client->receiveMessage());
 	}
 	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-	}
+	{}
 }

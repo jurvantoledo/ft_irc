@@ -25,7 +25,7 @@ void	joinCMD::ExecCommand(Client* client)
 	if (channel->getMaxUsers() && channel->getMaxUsers() >= channel->channelSize())
 		return (void)client->queuePacket(ERR_CHANNELISFULL(client->getNickname(), channelName));
 	
-	if (channel->checkPassword(password))
+	if (!channel->checkPassword(password))
 		return (void)client->queuePacket(ERR_WRONGCHANPASS(client->getNickname(), channelName));
 	
 	if (channel->isMember(client))

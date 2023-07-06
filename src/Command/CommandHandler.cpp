@@ -52,11 +52,11 @@ void    CommandHandler::Call(Client* client, std::string packet) const
     try
     {
         command = client->removeArgument();
-        
+        std::cout << command << std::endl;
         Command* cmd = this->getCommand(command);
 
-        if(!this->registerUser(client, command) && !client->getAuthenticatedUser())
-            return (void)client->queuePacket(ERR_NOTREGISTERED(client->getNickname()));
+        // if(!this->registerUser(client, command) && !client->getAuthenticatedUser())
+        //     return (void)client->queuePacket(ERR_NOTREGISTERED(client->getNickname()));
         
         if (cmd)
             cmd->ExecCommand(client);

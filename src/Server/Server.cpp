@@ -1,10 +1,15 @@
 #include "../../include/Server.hpp"
 
-Server::Server(int &port, std::string password) : _port(port), _password(password), \
-				_onlineClients(0), _pollfds(), _clients(), _commandHandlers(new CommandHandler(*this)) 
-				{}
+Server::Server(int &port, std::string password):
+				_socket(-1),
+				_port(port), 
+				_password(password), \
+				_pollfds(), 
+				_clients(),
+				_onlineClients(0),
+				_commandHandlers(new CommandHandler(*this)) {}
 
-Server::~Server() 
+Server::~Server()
 {
 	std::map<std::string, Channel*>::iterator ch_it;
 	std::map<int, Client*>::iterator cl_it;
@@ -39,18 +44,18 @@ void	Server::stayConnectedMan()
 {
 	Client* client;
 
-	int sockfd = createSocket();
-	if (sockfd == -1)
+	this->_socket = createSocket();
+	if (this->_socket == -1)
 	{
 		std::cerr << "Failed to create socket." << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	setSocketOptions(sockfd);
-	bindSocket(sockfd);
+	setSocketOptions(this->_socket);
+	bindSocket(this->_socket);
  
-	if (listen(sockfd, 5) < 0)
+	if (listen(this->_socket, 5) < 0)
 	{
-		close(sockfd);
+		close(this->_socket);
 		std::cerr << "Listen() failed" << std::endl;
 		exit(EXIT_FAILURE);
 	}
@@ -58,7 +63,7 @@ void	Server::stayConnectedMan()
     std::cout << "Server listening on port" << " " << _port << std::endl;
 
 	struct	pollfd server_poll;
-	server_poll.fd = sockfd;
+	server_poll.fd = this->_socket;
 	server_poll.events = POLLIN;
 
 	this->_pollfds.push_back(server_poll);
@@ -73,7 +78,7 @@ void	Server::stayConnectedMan()
 		if (this->_pollfds[0].revents & POLLIN)
 		{
 			this->_pollfds[0].revents = 0;
-			this->newClientConnection(sockfd);
+			this->newClientConnection(this->_socket);
 		}
 
 		for (size_t i = 1; i < this->_pollfds.size(); i++)

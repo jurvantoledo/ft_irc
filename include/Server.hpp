@@ -56,6 +56,8 @@ class Server
 		int		getAcceptedMan(int sockfd);
 		bool	handleData(Client* client);
 		void	setSocketOptions(int sockfd);
+		void	setFcntl(int sockfd);
+		void	setListen(int socket);
 
 		void	broadcastMessage(pollfd& pfds, Client* client);
 		void	processPacket(Client* client);
