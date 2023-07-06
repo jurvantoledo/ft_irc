@@ -6,25 +6,29 @@ Client*	Server::AddClient(int fd)
 
 	new_client = new Client(fd);
     new_client->setSocket(fd);
-	this->_clients[fd] = new_client;
 
 	return new_client;
 }
 
 Client*	Server::getClient(int fd)
 {
-	return this->_clients.at(fd);
+	return (this->_clients.at(fd));
 }
 
 void	Server::removeClient(int fd)
 {
     std::map<int, Client*>::iterator it = this->_clients.find(fd);
-    if (it != this->_clients.end()) {
-        delete it->second;
-        this->_clients.erase(it);
-    }
-	else
-		throw std::runtime_error("Client not found");
+
+    if (it != this->_clients.end()) 
+	{
+		if (it->first == fd)
+		{
+			delete it->second;
+			this->_clients.erase(it);
+		}
+		else
+			throw std::runtime_error("Cant delete the client because it does not exist");
+	}
 }
 
 Client*	Server::getClientByName(std::string& nickname)
