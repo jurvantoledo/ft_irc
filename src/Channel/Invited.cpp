@@ -23,7 +23,7 @@ void	Channel::removeInvited(Client* client)
 {
 	std::vector<Client*>::iterator it;
 
-	for (it = this->_invited.begin(); it != this->_invited.end(); it++)
+	for (it = this->_invited.begin(); it != this->_invited.end();)
 	{
 		if (*it == client)
 			it = this->_invited.erase(it);

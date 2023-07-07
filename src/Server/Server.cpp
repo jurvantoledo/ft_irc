@@ -49,6 +49,7 @@ void	Server::stayConnectedMan()
 		std::cerr << "Failed to create socket." << std::endl;
 		exit(EXIT_FAILURE);
 	}
+	this->setFcntl(this->_socket);
 	setSocketOptions(this->_socket);
 	bindSocket(this->_socket);
  

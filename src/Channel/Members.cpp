@@ -34,11 +34,13 @@ void	Channel::removeMember(Client *client)
 	
 	this->sendMessage(RPL_LEAVE(client->getNickname(), this->_name), client);
 
-	for (it = this->_members.begin(); it != this->_members.end(); it++)
+	for (it = this->_members.begin(); it != this->_members.end();)
 	{
 		if (*it == client)
+		{
 			it = this->_members.erase(it);
-		else
-			it++;
+		}
+		else 
+		it++;
 	}
 }

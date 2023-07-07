@@ -13,7 +13,7 @@ Channel::~Channel()
 	std::vector<Client*>::iterator it;
 
 	for (it = this->_members.begin(); it != this->_members.end(); it++)
-		this->sendMessage(RPL_LEAVE((*it)->getNickname(), this->_name), NULL);
+		this->sendMessage(RPL_LEAVE((*it)->getNickname(), this->_name));
 }
 
 // Getters

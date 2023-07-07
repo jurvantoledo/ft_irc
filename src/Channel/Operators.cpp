@@ -23,7 +23,7 @@ void	Channel::removeOperator(Client* client)
 {
 	std::vector<Client*>::iterator it;
 
-	for (it = this->_operators.begin(); it != this->_operators.end(); it++)
+	for (it = this->_operators.begin(); it != this->_operators.end();)
 	{
 		if (*it == client)
 			it = this->_operators.erase(it);
