@@ -45,7 +45,6 @@ void    CommandHandler::Call(Client* client, std::string packet) const
         command = client->removeArgument();
         cmd = this->getCommand(command);
         
-        std::cout << "WEFHYCKUHKUVIE: " << command << std::endl;
         if(!client->getAuthenticatedUser() && (command == "USER" || command == "PASS" || command == "NICK"))
         {
             if (client->getNickname().empty() || client->getPassword().empty() \
