@@ -44,6 +44,8 @@ void    CommandHandler::Call(Client* client, std::string packet) const
 
         command = client->removeArgument();
         cmd = this->getCommand(command);
+        if (!cmd)
+            throw MessageException(command.c_str());
         
         if(!client->getAuthenticatedUser() && (command == "USER" || command == "PASS" || command == "NICK"))
         {
