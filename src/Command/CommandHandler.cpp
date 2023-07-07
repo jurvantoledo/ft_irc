@@ -67,8 +67,8 @@ void    CommandHandler::Call(Client* client, std::string packet) const
 		            client->eraseArgument(); 
                 return (void)client->queuePacket(ERR_NOTREGISTERED(client->getNickname()));
             }
-            
         }
+
         if (cmd->getAuthenticated() == true)
         {
             try { 
