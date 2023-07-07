@@ -22,7 +22,6 @@ void    userCMD::ExecCommand(Client* client)
 
 	if (client->getNickname().empty())
 	{
-		client->eraseArgument();
 		return (void)client->queuePacket(ERR_NICKNAMENOTSET(client->getUsername()));
 	}
 

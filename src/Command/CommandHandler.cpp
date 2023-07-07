@@ -36,7 +36,7 @@ Command*    CommandHandler::getCommand(std::string& command) const
 void    CommandHandler::Call(Client* client, std::string packet) const
 {
     client->getArguments(packet);
-    std::string command("NONE");
+    std::string command;
 
     try
     {
@@ -44,12 +44,17 @@ void    CommandHandler::Call(Client* client, std::string packet) const
 
         command = client->removeArgument();
         cmd = this->getCommand(command);
-
+        
+        std::cout << "WEFHYCKUHKUVIE: " << command << std::endl;
         if(!client->getAuthenticatedUser() && (command == "USER" || command == "PASS" || command == "NICK"))
         {
             if (client->getNickname().empty() || client->getPassword().empty() \
                 || client->getUsername().empty() || client->getRealName().empty())
-                try { cmd->ExecCommand(client); }
+                try { 
+                    cmd->ExecCommand(client);
+                    if (client->queueSize())
+		                client->eraseArgument(); 
+                }
                 catch(const std::out_of_range& e)	{ return ; }
         }
         else
@@ -57,11 +62,21 @@ void    CommandHandler::Call(Client* client, std::string packet) const
             if (!client->getNickname().empty() && !client->getPassword().empty() && \
                 !client->getUsername().empty() && !client->getRealName().empty())
                 cmd->setAuthenticated();
+            else
+            {
+                if (client->queueSize())
+		            client->eraseArgument(); 
+                return (void)client->queuePacket(ERR_NOTREGISTERED(client->getNickname()));
+            }
+            
         }
-
         if (cmd->getAuthenticated() == true)
         {
-            try { cmd->ExecCommand(client); }
+            try { 
+                cmd->ExecCommand(client); 
+                if (client->queueSize())
+		            client->eraseArgument(); 
+            }
             catch(const std::out_of_range& e)	{ return ; }
         }
     }
