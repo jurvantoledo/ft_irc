@@ -37,10 +37,10 @@ void    CommandHandler::Call(Client* client, std::string packet) const
 {
     client->getArguments(packet);
     std::string command;
+    Command* cmd;
 
     try
     {
-        Command* cmd;
 
         command = client->removeArgument();
         cmd = this->getCommand(command);
