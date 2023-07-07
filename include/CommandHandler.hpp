@@ -25,7 +25,6 @@ class CommandHandler
         ~CommandHandler();
 
         void    Call(Client* client, std::string packet) const;
-        bool    registerUser(Client* client, std::string command) const;
 
         // std::string getRemainingArguments(std::queue<std::string> args);
 

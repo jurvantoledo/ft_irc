@@ -33,36 +33,44 @@ Command*    CommandHandler::getCommand(std::string& command) const
     return NULL;
 }
 
-bool    CommandHandler::registerUser(Client* client, std::string command) const
-{
-    if (client->getNickname().empty() || client->getUsername().empty() || client->getPassword().empty())
-    {
-        if (command == "USER" || command == "PASS" || command == "NICK")
-            return true;
-    }
-    
-    return false;
-}
-
 void    CommandHandler::Call(Client* client, std::string packet) const
 {
     client->getArguments(packet);
-    std::string command;
+    std::string command("NONE");
+    Command* cmd;
 
     try
     {
         command = client->removeArgument();
-        
-        Command* cmd = this->getCommand(command);
+        cmd = this->getCommand(command);
 
-        if(!this->registerUser(client, command) && !client->getAuthenticatedUser())
-            return (void)client->queuePacket(ERR_NOTREGISTERED(client->getNickname()));
+        if(!client->getAuthenticatedUser() && (command == "USER" || command == "PASS" || command == "NICK"))
+        {
+            if (client->getNickname().empty() || client->getPassword().empty() || client->getUsername().empty())
+                if (cmd) cmd->ExecCommand(client);
+        }
+        else
+        {
+            if (!client->getNickname().empty() && !client->getPassword().empty() && !client->getUsername().empty() && cmd)
+                cmd->setAuthenticated();
+        }
         
-        try									{ cmd->ExecCommand(client); }
-		catch (const std::out_of_range& e)	{ client->queuePacket(ERR_NEEDMOREPARAMS(client->getNickname(), command)); }
+        if (!cmd)
+        {
+            throw MessageException(command.c_str());
+        }
+        else
+        {
+            if (cmd->getAuthenticated() == true)
+            {
+                cmd->ExecCommand(client);
+            }
+        }
     }
     catch (const std::exception& e)
     {
-        client->queuePacket(ERR_UNKNOWNCOMMAND(client->getNickname(), e.what()));
+        client->eraseArgument();
+        delete cmd;
+        return (void)client->queuePacket(ERR_UNKNOWNCOMMAND(client->getNickname(), e.what()));
     }
 }

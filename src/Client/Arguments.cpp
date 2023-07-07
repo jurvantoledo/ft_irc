@@ -36,4 +36,13 @@ std::string Client::getRemainingArguments()
     return message_part;
 }
 
+void Client::eraseArgument()
+{
+    while (this->_args.size())
+    {
+        this->_args.pop();
+    }
+
+}
+
 size_t  Client::queueSize() const { return this->_args.size(); }

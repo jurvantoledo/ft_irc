@@ -76,6 +76,7 @@ class Client
 		void			getArguments(std::string& packet);
 		std::string		removeArgument();
 		std::string 	getRemainingArguments();
+		void			eraseArgument();
 		size_t 			queueSize() const;
 
 

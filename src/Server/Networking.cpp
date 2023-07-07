@@ -13,7 +13,7 @@ int		Server::createSocket()
 		int protocol -> Protocol value for Internet Protocol(IP), which is 0. This is the same number 
 					which appears on protocol field in the IP header of a packet.(man protocols for more details)
 	*/
-	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	int sockfd = socket(PF_INET, SOCK_STREAM, 0);
 	if (sockfd == -1)
 	{
 		throw SocketFailure();
@@ -50,7 +50,7 @@ void	Server::bindSocket(int sockfd)
 	memset(&serverAddr, 0, sizeof(serverAddr));
 	
 	// Set the Address Family
-	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_family = PF_INET;
 	// The inet_addr() function shall convert the string pointed to by cp, in the standard IPv4 dotted decimal notation, to an integer value suitable for use as an Internet address.
 	serverAddr.sin_addr.s_addr = INADDR_ANY;
 	// The htons function converts the unsigned short integer hostshort from host byte order to network byte order.

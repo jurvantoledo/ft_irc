@@ -15,12 +15,17 @@ class Command
 {
     protected:
         Server& _server;
+        bool    _authenticated;
 
     public:
         explicit Command(Server& server);
         virtual ~Command();
 
         virtual void    ExecCommand(Client* client) = 0;
+
+        bool    getAuthenticated() const;
+        void    setAuthenticated();
+
 };
 
 class nickCMD: public Command
