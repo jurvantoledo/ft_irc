@@ -3,7 +3,7 @@
 
 void	Channel::addOperator(Client* client)
 {
-	if (!this->isMember(client) && !this->isOperator(client))
+	if (this->isMember(client) && !this->isOperator(client))
 		this->_operators.push_back(client);
 }
 

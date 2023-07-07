@@ -24,7 +24,7 @@ void    modeCMD::ExecCommand(Client* client)
 
     for (std::string::iterator it = modes.begin(); it != modes.end(); it++)
     {
-        mode = *((it)++);
+        mode = *((it));
         // if (mode == '+')
         //     add = true;
         // else if (mode == '-')
@@ -49,9 +49,7 @@ void    modeCMD::ExecCommand(Client* client)
                 break ;
             case 'k':
                 if (add)
-                {
                     channel_ptr->setPassword(client->removeArgument());
-                }
                 else
                     channel_ptr->setPassword("");
                 break ;

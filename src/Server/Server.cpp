@@ -16,6 +16,7 @@ Server::~Server()
 	delete _commandHandlers;
 	close(this->_socket);
 
+	std::cout << "Kanalus deletus" << std::endl;
 	for (ch_it = this->_channels.begin(); ch_it != this->_channels.end(); ch_it++)
 		delete ch_it->second;
 	

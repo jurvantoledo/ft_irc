@@ -14,15 +14,17 @@ void	joinCMD::ExecCommand(Client* client)
 	if ((char)channelName[0] != '#')
 		return (void)client->queuePacket(ERR_WRONGCHANNAME(client->getNickname(), channelName));
 	
-	if (client->queueSize() > 1)
+	if (client->queueSize())
 		password = client->removeArgument();
 
 	channel = this->_server.getChannel(channelName);
-	new_channel = !channel;
+	if (channel == NULL)
+		new_channel = true;
+
 	if (!channel)
 		channel = this->_server.addChannel(channelName, client->getPassword());
 	
-	if (channel->getMaxUsers() && channel->getMaxUsers() >= channel->channelSize())
+	if (channel->getMaxUsers() > 0 && channel->channelSize() >= channel->getMaxUsers())
 		return (void)client->queuePacket(ERR_CHANNELISFULL(client->getNickname(), channelName));
 	
 	if (!channel->checkPassword(password))

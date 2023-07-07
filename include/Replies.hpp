@@ -24,7 +24,7 @@
 #define ERR_NEEDMOREPARAMS(origin, command)		"461 " + origin + " " + command + " :Not enough parameters"
 #define ERR_ALREADYREGISTERED(origin)			"462 " + origin + " :You are already registered"
 #define ERR_PASSWDMISMATCH(origin)				"464 " + origin + " :Incorrect password"
-#define ERR_CHANNELISFULL(origin, channel)		"471 " + origin + " " + channel + " :Cannot join channel (+l)"
+#define ERR_CHANNELISFULL(origin, channel)		"471 " + origin + " " + channel + " :Channel is full (+l)"
 #define ERR_UNKNOWNMODE(origin, mode, channel)	"472 " + origin + " " + mode + " :is unknown mode char to me for " + channel
 #define ERR_INVITEONLY(origin, channel)			"473 " + origin + " " + channel + " :Cannot join channel (+i)"
 #define ERR_WRONGCHANPASS(origin, channel)		"475 " + origin + " " + channel + " :Cannot join channel (+k)"

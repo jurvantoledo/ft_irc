@@ -21,7 +21,10 @@ void    userCMD::ExecCommand(Client* client)
 	client->setRealName(realname);
 
 	if (client->getNickname().empty())
+	{
+		client->eraseArgument();
 		return (void)client->queuePacket(ERR_NICKNAMENOTSET(client->getUsername()));
+	}
 
 	client->setAuthenticatedUser();
 	client->queuePacket(RPL_WELCOME(client->getNickname()));

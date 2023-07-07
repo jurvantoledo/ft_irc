@@ -37,40 +37,37 @@ void    CommandHandler::Call(Client* client, std::string packet) const
 {
     client->getArguments(packet);
     std::string command("NONE");
-    Command* cmd;
 
     try
     {
+        Command* cmd;
+
         command = client->removeArgument();
         cmd = this->getCommand(command);
 
         if(!client->getAuthenticatedUser() && (command == "USER" || command == "PASS" || command == "NICK"))
         {
-            if (client->getNickname().empty() || client->getPassword().empty() || client->getUsername().empty())
-                if (cmd) cmd->ExecCommand(client);
+            if (client->getNickname().empty() || client->getPassword().empty() \
+                || client->getUsername().empty() || client->getRealName().empty())
+                try { cmd->ExecCommand(client); }
+                catch(const std::out_of_range& e)	{ return ; }
         }
         else
         {
-            if (!client->getNickname().empty() && !client->getPassword().empty() && !client->getUsername().empty() && cmd)
+            if (!client->getNickname().empty() && !client->getPassword().empty() && \
+                !client->getUsername().empty() && !client->getRealName().empty())
                 cmd->setAuthenticated();
         }
-        
-        if (!cmd)
+
+        if (cmd->getAuthenticated() == true)
         {
-            throw MessageException(command.c_str());
-        }
-        else
-        {
-            if (cmd->getAuthenticated() == true)
-            {
-                cmd->ExecCommand(client);
-            }
+            try { cmd->ExecCommand(client); }
+            catch(const std::out_of_range& e)	{ return ; }
         }
     }
     catch (const std::exception& e)
     {
         client->eraseArgument();
-        delete cmd;
-        return (void)client->queuePacket(ERR_UNKNOWNCOMMAND(client->getNickname(), e.what()));
+        client->queuePacket(ERR_UNKNOWNCOMMAND(client->getNickname(), e.what()));
     }
 }

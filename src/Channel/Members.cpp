@@ -40,7 +40,7 @@ void	Channel::removeMember(Client *client)
 		{
 			it = this->_members.erase(it);
 		}
-		else 
-		it++;
+		else
+			it++;
 	}
 }

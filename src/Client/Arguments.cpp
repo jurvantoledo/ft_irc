@@ -14,9 +14,7 @@ void		Client::getArguments(std::string& packet)
 std::string Client::removeArgument()
 {
     if (!this->_args.size())
-    {
-        throw std::runtime_error("Empty Queue!");
-    }
+        throw std::runtime_error("Not enough arguments given!");
     
     std::string arg = this->_args.front();
     this->_args.pop();
@@ -42,7 +40,6 @@ void Client::eraseArgument()
     {
         this->_args.pop();
     }
-
 }
 
 size_t  Client::queueSize() const { return this->_args.size(); }
